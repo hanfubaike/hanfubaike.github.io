@@ -448,11 +448,15 @@
             let geometry = evt.geometry
             let orgname = geometry.properties.title.toString()
             let orgid =  geometry.properties.orgid
+            let mapPoint = {}
+            let pageHeight = $(window).height()
+
             //设置infoWindow
             infoWindow.open(); //打开信息窗
             infoWindow.setPosition(geometry.position);//设置信息窗位置
             map.panTo(geometry.position)
-            map.panTo(map.unprojectFromContainer({x:800,y:60}))
+            mapPoint = map.projectToContainer(geometry.position)
+            map.panTo(map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+70}),2000)
             //map.setDraggable(false)
             //let orgNameLink = `<a style="font-size: 16px;" href="/org?orgname=${orgname}">${orgname}<a>`
 
@@ -560,7 +564,7 @@
                 setSwiper()
                 $('#orgType pp').text(`组织类型：${orgInfo.orgType}`)
                 $('#locationAddress pp').text(`组织地址：${orgInfo.locationAddress}`)
-                $('#telNumble pp').text(`联系电话：${orgInfo.telNumble}`)
+                $('#telNumble pp').text(`联系电话：${orgInfo.telNumble || ""}`)
                 $('#QQGroup pp').text(`QQ群号：${orgInfo.QQGroup}`)
                 $('#wxmp pp').text(`微信公众号：${orgInfo.wxmp}`)
                 $('#orgDesc').text(`${orgInfo.orgDesc}`)
