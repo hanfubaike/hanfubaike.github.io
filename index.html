@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="zh-CN">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -115,6 +115,8 @@
             word-break: break-all;
             width: 400px;
             text-align: left;
+            white-space: initial;
+            line-height: 1.2;
         }
 
         swiper {
@@ -171,7 +173,7 @@
         .more {
             background: #fff;
             padding: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             box-shadow: 0 0 10px #eee;
             font-size: 12px;
         }
@@ -179,6 +181,11 @@
         .more i {
             padding-right: 2px;
             color: #37aafc;
+        }
+
+        .item {
+            font-size: 14px;
+            padding-bottom: 2px;
         }
 
         .desc {
@@ -243,14 +250,14 @@
         .slide {
             position: relative;
             width: 400px;
-            height: 310px;
+            height: 260px;
             margin: auto;
         }
 
         .slide .outer {
             position: relative;
             overflow: hidden;
-            height: 300px;
+            height: 260px;
         }
 
         .slide .outer .inner {
@@ -260,6 +267,7 @@
             left: 0px;
             top: 0;
             padding-left: 0px;
+            margin-block-start: 0px;
         }
 
         .slide .outer .inner li {
@@ -293,8 +301,9 @@
         }
         
         .slide .outer .dot {
-            margin-top: 265px;
+            margin-top: 52%;
             text-align: center;
+            position: relative;
         }
 
         .slide .outer .dot li {
@@ -314,18 +323,18 @@
             position: absolute;
             width: 100%;
             height: 60px;
-            top: 150px;
+            top: 40%;
             left: 0;
         }
 
         .slide .arrow-box .arrow {
-            width: 60px;
-            height: 60px;
-            line-height: 60px;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
             text-align: center;
             border-radius: 30px;
             background-color: #dde2e6;
-            font-size: 60px;
+            font-size: 30px;
             color: #999;
             cursor: pointer;
         }
@@ -337,14 +346,31 @@
         .slide .arrow-box .arrow.arrow-r {
             float: right;
         }
+
+        #searchPart {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1001;
+            width: 18rem;
+        }
     </style>
-    <script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
     <!--引入Javascript API GL，参数说明参见下文-->
-    <script src="http://map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A"></script>
+    <script src="//map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A"></script>
+    <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/2.0.1/weui.min.css">
+    <script type="text/javascript" src="//res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
     <script>
         var center = ''
         var map = {}
         var infoWindow = {}
+        var orgList = []
+
+        getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = decodeURI(window.location.search.substr(1)).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
 
         var MarkerStyle = {
             //创建一个styleId为"myStyle"的样式（styles的子属性名即为styleId）
@@ -368,8 +394,11 @@
             var dot = $('#dot');                //小圆点盒子
 
             var imgW = $(img[0]).outerWidth();  //每个li标签的宽度
-
             var imgCount = img.length;                   //总图片个数（不同图片的个数）（实际dom上是有7张）
+            for(let i = 1; i < imgCount; i++){
+                dot.append("<li></li>")
+            }
+            
             var i = 0;                          //初始化为第0张图片
             timer = null;                       //定时器
             if(imgCount < 2){
@@ -407,8 +436,8 @@
                 innerBox.stop(false, true).animate({'left':-i*imgW+'px'},300)
                 dot.find('li').removeClass('active').eq(i-1).addClass('active')
                 
-                if(i <= 1){
-                    innerBox.animate({'left':-imgCount*imgW+'px'},0);
+                if(i < 1){
+                    innerBox.animate({'left':(-imgCount+1)*imgW+'px'},0);
                     dot.find('li').removeClass('active').eq(imgCount-1).addClass('active')
                     i = imgCount;
                 }
@@ -443,20 +472,22 @@
             map.setDraggable(false)
         }
 
-        function setInfoWindow(evt) {
-            console.log(evt)
-            let geometry = evt.geometry
-            let orgname = geometry.properties.title.toString()
-            let orgid =  geometry.properties.orgid
+        function setInfoWindow(orgname,orgid,latLng,isSearch=false) {
+            history.replaceState("","",`?orgname=${orgname}`)
+            //history.pushState("","",`?orgname=${orgname}`)
             let mapPoint = {}
             let pageHeight = $(window).height()
 
             //设置infoWindow
             infoWindow.open(); //打开信息窗
-            infoWindow.setPosition(geometry.position);//设置信息窗位置
-            map.panTo(geometry.position)
-            mapPoint = map.projectToContainer(geometry.position)
-            map.panTo(map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+70}),2000)
+            infoWindow.setPosition(latLng);//设置信息窗位置
+            if(isSearch){
+                map.setZoom(14)
+            }
+            map.panTo(latLng)
+            mapPoint = map.projectToContainer(latLng)
+            map.panTo(map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+80}),2000)
+            
             //map.setDraggable(false)
             //let orgNameLink = `<a style="font-size: 16px;" href="/org?orgname=${orgname}">${orgname}<a>`
 
@@ -470,10 +501,6 @@
         　　　　　　　<!--底部小圆点-->
                     <ol class="dot" id="dot">
                         <li class="active"></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
-                        <li></li>
                     </ol>
                 </div>
     　　　　    <!--左右两侧的点击切换按钮-->
@@ -508,7 +535,7 @@
                 组织地址：
                 </pp>
                 </div>
-                <div class="item" id="telNumble" data-telNumble="{{telNumble}}" bindtap="navigateTo">
+                <div class="item" id="telNumble" style="display: none;">
                 <i class="iconfont icondianhua"></i>
                 <pp>
                     联系电话：
@@ -530,7 +557,7 @@
             </div>
 
             <!-- DESC -->
-            <div class="desc">
+            <div class="desc" style="margin-bottom: 0px;">
                 <div class="title">简介</div>
                 <!-- TODO: rich-text -->
                 <div class="content" id="orgDesc">
@@ -549,7 +576,8 @@
             orgpage.mouseleave(function(){
                 map.setDraggable(true)
             })
-            let getUrl = "http://master-xzb1z.service.tcloudbase.com/orginfo"
+            $('#orgName').text(`${orgname}`)
+            let getUrl = "//master-xzb1z.service.tcloudbase.com/orginfo"
             $.get(getUrl, { "id": orgid }, function (res) {
                 console.log(res)
                 let orgInfo = res.orgInfo
@@ -564,7 +592,13 @@
                 setSwiper()
                 $('#orgType pp').text(`组织类型：${orgInfo.orgType}`)
                 $('#locationAddress pp').text(`组织地址：${orgInfo.locationAddress}`)
-                $('#telNumble pp').text(`联系电话：${orgInfo.telNumble || ""}`)
+                if(orgInfo.telNumble){
+                    $('#telNumble pp').text(`联系电话：${orgInfo.telNumble}`)
+                    $('#telNumble').show()
+                }else{
+                    $('#telNumble').hide()
+                }
+                
                 $('#QQGroup pp').text(`QQ群号：${orgInfo.QQGroup}`)
                 $('#wxmp pp').text(`微信公众号：${orgInfo.wxmp}`)
                 $('#orgDesc').text(`${orgInfo.orgDesc}`)
@@ -572,9 +606,17 @@
             })
         }
 
+        function markerClick(evt){
+            let geometry = evt.geometry
+            let orgname = geometry.properties.title.toString()
+            let orgid =  geometry.properties.orgid
+            let latLng = geometry.position
+            setInfoWindow(orgname,orgid,latLng)
+        }        
+
         function setMarkers(data) {
-            let orglist = data.orgList
-            console.log(orglist)
+            orgList = data.orgList
+            console.log(orgList)
             //创建并初始化MultiMarker
             var markerLayer = new TMap.MultiMarker({
                 map: map,  //指定地图容器
@@ -586,11 +628,18 @@
             });
             var markerList = []
             var positionList = []
-            for (let x in orglist) {
-                let lat = orglist[x].longLatiute.coordinates[1]
-                let lng = orglist[x].longLatiute.coordinates[0]
-                let name = orglist[x].orgName
-                let id = orglist[x]._id
+            var thisOrgName = decodeURI(getUrlParam("orgname"))
+            var thisOrgjson = {}
+            for (let x in orgList) {
+                let lat = orgList[x].longLatiute.coordinates[1]
+                let lng = orgList[x].longLatiute.coordinates[0]
+                let name = orgList[x].orgName
+                let id = orgList[x]._id
+                if (name == thisOrgName){
+                    thisOrgjson.orgName = name
+                    thisOrgjson.position = new TMap.LatLng(lat, lng)
+                    thisOrgjson.orgid = id
+                }
                 positionList.push({
                     position: new TMap.LatLng(lat, lng)
                 })
@@ -606,7 +655,8 @@
                 markerList.push(marker)
 
             }
-            markerLayer.on("click", setInfoWindow)
+
+            markerLayer.on("click", markerClick)
             //markerLayer.add(markerList)
 
 
@@ -656,7 +706,9 @@
                 offset: { x: 0, y: -48 } //设置信息窗相对position偏移像素，为了使其显示在Marker的上方
             });
             infoWindow.close();//初始关闭信息窗关闭
-
+            if(thisOrgjson.orgName){
+                setInfoWindow(thisOrgjson.orgName,thisOrgjson.orgid,thisOrgjson.position,true)
+            }
             var clusterBubbleList = [];
             var markerGeometries = [];
             var marker = null;
@@ -719,6 +771,7 @@
 
 
             })
+
         }
 
         //地图初始化函数，本例取名为init，开发者可根据实际情况定义
@@ -745,7 +798,7 @@
             map.on("dragend",function(res){
                 infoWindow.close()
             })
-            let postUrl = "http://master-xzb1z.service.tcloudbase.com/orglist"
+            let postUrl = "//master-xzb1z.service.tcloudbase.com/orgList"
             $.get(postUrl, "", setMarkers)
 
 
@@ -812,7 +865,112 @@
 
 <body onload="initMap()">
     <!-- 定义地图显示容器 -->
+
+    <div class="page__bd" id="searchPart">
+        <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
+        <div class="weui-search-bar" id="searchBar">
+            <form class="weui-search-bar__form">
+                <div class="weui-search-bar__box">
+                    <i class="weui-icon-search"></i>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+                    <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
+                </div>
+                <label class="weui-search-bar__label" id="searchText">
+                    <i class="weui-icon-search"></i>
+                    <span>搜索</span>
+                </label>
+            </form>
+            <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+        </div>
+        <div class="weui-cells searchbar-result" id="searchResult" style="display: none;">
+
+        </div>
+    </div>
+
     <div id="container"></div>
+    <script type="text/javascript">
+
+        function clickTips(self){
+            let isSearch = true
+            let orgName = $(self).data('orgname')
+            let orgid = $(self).data('orgid')
+            let lat = $(self).data('lat')
+            let lng = $(self).data('lng')
+            let latLng = new TMap.LatLng(lat, lng)
+            setInfoWindow(orgName,orgid,latLng,isSearch)
+            //map.zoomTo(8)
+        }
+        $(function(){
+            var $searchBar = $('#searchBar'),
+                $searchResult = $('#searchResult'),
+                $searchText = $('#searchText'),
+                $searchInput = $('#searchInput'),
+                $searchClear = $('#searchClear'),
+                $searchCancel = $('#searchCancel');
+    
+            function hideSearchResult(){
+                $searchResult.hide();
+                $searchInput.val('');
+            }
+            function cancelSearch(){
+                hideSearchResult();
+                $searchBar.removeClass('weui-search-bar_focusing');
+                $searchText.show();
+            }
+    
+            $searchText.on('click', function(){
+                $searchBar.addClass('weui-search-bar_focusing');
+                $searchInput.focus();
+            });
+            $searchInput
+                .on('blur', function () {
+                    if(!this.value.length) cancelSearch();
+                })
+                .on('input', function(){
+                    if(this.value.length) {
+                        let searchTips = []
+                        let value = this.value
+                        let tempHtml = ""
+                        let i = 0
+                        for(let x in orgList){
+                            if(i >10){
+                                break
+                            }
+                            i++
+                            let orgName = orgList[x].orgName
+                            let orgid = orgList[x]._id
+                            let lat = orgList[x].longLatiute.coordinates[1]
+                            let lng = orgList[x].longLatiute.coordinates[0]
+                            if(orgName.indexOf(value) > -1){
+                                tempHtml += `<div class="weui-cell weui-cell_active weui-cell_access" onclick="clickTips(this)" data-orgid="${orgid}" data-orgname="${orgName}" data-lat="${lat}" data-lng="${lng}">
+                                                    <div class="weui-cell__bd weui-cell_primary">
+                                                        <p>${orgName}</p>
+                                                    </div>
+                                                </div>`
+                                
+                            }
+                        }
+                        $searchResult.html(tempHtml)
+                        if(tempHtml){
+                            $searchResult.show();
+                        }
+                        
+                    } else {
+                        //$searchResult.children(".weui-cell_access").remove()
+                        $searchResult.hide();
+                    }
+                })
+            ;
+            $searchClear.on('click', function(){
+                hideSearchResult();
+                $searchInput.focus();
+            });
+            $searchCancel.on('click', function(){
+                cancelSearch();
+                $searchInput.blur();
+            });
+        });
+    </script>
 </body>
 
 </html>
