@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    @font-face {
+      font-family: "iconfont";
+      src: url('//at.alicdn.com/t/font_1692848_ofchcawy11.eot?t=1597031491457');
+      /* IE9 */
+      src: url('//at.alicdn.com/t/font_1692848_ofchcawy11.eot?t=1597031491457#iefix') format('embedded-opentype'),
+        /* IE6-IE8 */
+        url('data:application/x-font-woff2;charset=utf-8;base64,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') format('woff2'),
+        url('//at.alicdn.com/t/font_1692848_ofchcawy11.woff?t=1597031491457') format('woff'),
+        url('//at.alicdn.com/t/font_1692848_ofchcawy11.ttf?t=1597031491457') format('truetype'),
+        /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+        url('//at.alicdn.com/t/font_1692848_ofchcawy11.svg?t=1597031491457#iconfont') format('svg');
+      /* iOS 4.1- */
+    }
+
+    .iconfont {
+      font-family: "iconfont" !important;
+      font-size: 16px;
+      font-style: normal;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .iconlianxiren:before {
+      content: "\e654";
+    }
+
+    .icondianhua:before {
+      content: "\e614";
+    }
+
+    .iconshouji:before {
+      content: "\e70a";
+    }
+
+    .iconleixing:before {
+      content: "\e605";
+    }
+
+    .iconqq:before {
+      content: "\e601";
+    }
+
+    .iconfanhui:before {
+      content: "\e602";
+    }
+
+    .icondizhi:before {
+      content: "\e603";
+    }
+
+    .iconweixin:before {
+      content: "\e604";
+    }
+
+
+    .page {
+      background: #f6f6f6;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    swiper {
+      height: 430rpx;
+      width: 100vw;
+      background: #eee;
+    }
+
+    swiper .slide {
+      width: 100%;
+      height: 100%;
+    }
+
+    .head-wrapper {
+      position: relative;
+      background: #fff;
+    }
+
+    .head-wrapper.logo-mode .title {
+      padding: 10rpx 20rpx 20rpx 180rpx;
+    }
+
+    .head-wrapper .logo {
+      position: absolute;
+      top: -60rpx;
+      left: 10rpx;
+      width: 140rpx;
+      height: 140rpx;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #eee;
+      border: 4px solid #fff;
+    }
+
+    .head-wrapper .title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20rpx 20rpx 20rpx 40rpx;
+      border-bottom: 1px solid #eee;
+    }
+
+    .head-wrapper .title .name {
+      font-size: 42rpx;
+    }
+
+    .head-wrapper .navigate {
+      width: 100rpx;
+      height: 100rpx;
+      padding: 20rpx;
+      box-sizing: border-box;
+    }
+
+    .more {
+      background: #fff;
+      padding: 20rpx;
+      margin-bottom: 20rpx;
+      box-shadow: 0 0 10px #eee;
+      font-size: 12px;
+    }
+
+    .more i {
+      padding-right: 4rpx;
+      color: #37aafc;
+    }
+
+    .desc {
+      min-height: 345rpx;
+      background: #fff;
+      padding: 20rpx;
+      box-shadow: 0 0 10px #eee;
+      margin-bottom: 20rpx;
+    }
+
+    .desc .title {
+      font-size: 36rpx;
+      margin-bottom: 20rpx;
+    }
+
+    .desc .title::before {
+      content: "|";
+      padding-right: 4px;
+      color: #37aafc;
+    }
+
+    .desc .content {
+      font-size: 14px;
+    }
+
+    .video-wrapper {
+      margin: 30rpx 0;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+    }
+
+    .video-wrapper .copyright {
+      font-size: 10px;
+      padding-top: 5px;
+      color: #aaa;
+    }
+
+    .video-wrapper .copyright .name {
+      color: #37aafc;
+    }
+
+    .adContainer {
+      width: 90%;
+      margin: 0 auto;
+      margin-bottom: 20rpx;
+    }
+
+    pa{
+      padding: 0px;
+      border: 0px;
+      margin: 0px;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .slideBox {
+      margin: 50px auto;
+      width: 300px;
+      height: 480px;
+      box-shadow: 2px 2px 10px #C38DD4;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slideBox ul {
+      position: relative;
+      width: 2000px;
+    }
+
+    .slideBox ul li {
+      float: left;
+      width: 300px;
+      height: 480px;
+      position: relative;
+
+    }
+
+    .spanBox {
+      position: absolute;
+      width: 300px;
+      height: 20px;
+      bottom: 10px;
+      left: 80px;
+    }
+
+    .spanBox span {
+      width: 18px;
+      height: 18px;
+      margin-left: 5px;
+      background-color: rgba(201, 178, 207, 1.00);
+      float: left;
+      line-height: 16px;
+      text-align: center;
+      text-shadow: 2px 2px 2px #C5EBF0;
+      font-family: cabin-sketch;
+      font-size: 15px;
+    }
+
+    .slideBox .spanBox .active {
+      background-color: rgba(155, 83, 244, 0.79);
+      border: solid 1px #BEEBEC;
+      border-radius: 4px;
+    }
+
+    .prev {
+      position: absolute;
+      left: 0px;
+      top: 320px;
+      float: left;
+      border-left: solid 1px rgba(251, 245, 246, 1.00);
+      opacity: 0.5;
+    }
+
+    .next {
+      width: 15px;
+      height: 50px;
+      position: absolute;
+      right: 0px;
+      top: 320px;
+      float: right;
+      border-right: solid 1px rgba(245, 237, 237, 1.00);
+      opacity: 0.5
+    }
+  </style>
+  <link
+    rel="stylesheet"
+    href="http://cdn.jsdelivr.net/npm/vant@2.9/lib/index.css"
+  />
+
+  <!-- 引入 Vue 和 Vant 的 JS 文件 -->
+  <script src="http://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+  <script src="http://cdn.jsdelivr.net/npm/vant@2.9/lib/vant.min.js"></script>
+  <script src="http://cdn.jsdelivr.net/npm/@vant/touch-emulator"></script>
+
+  <script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+  <script>
+    let getUrl = "http://master-xzb1z.service.tcloudbase.com/orginfo"
+    $.get(getUrl, { "orgname": "江门汉文化传承会" }, function (res) {
+      console.log(res)
+      let orgInfo = res.orgInfo
+      $('#orgType pp').text(`组织类型：${orgInfo.orgType}`)
+      $('#locationAddress pp').text(`组织地址：${orgInfo.locationAddress}`)
+      $('#telNumble pp').text(`联系电话：${orgInfo.telNumble}`)
+      $('#QQGroup pp').text(`QQ群号：${orgInfo.QQGroup}`)
+      $('#wxmp pp').text(`微信公众号：${orgInfo.wxmp}`)
+      $('#orgDesc').text(`${orgInfo.orgDesc}`)
+    })
+    $(document).ready(function () {
+      var slideBox = $(".slideBox");
+      var ul = slideBox.find("ul");
+      var oneWidth = slideBox.find("ul li").eq(0).width();
+      var number = slideBox.find(".spanBox span");            //注意分号 和逗号的用法
+      var timer = null;
+      var sw = 0;
+      //每个span绑定click事件，完成切换颜色和动画，以及读取参数值
+      number.on("click", function () {
+        $(this).addClass("active").siblings("span").removeClass("active");
+        sw = $(this).index();
+        ul.animate({
+          "right": oneWidth * sw,    //ul标签的动画为向左移动；
+        });
+      });
+      //左右按钮的控制效果
+      $(".next").stop(true, true).click(function () {
+        sw++;
+        if (sw == number.length) { sw = 0 };
+        number.eq(sw).trigger("click");
+      });
+      $(".prev").stop(true, true).click(function () {
+        sw--;
+        if (sw == number.length) { sw = 0 };
+        number.eq(sw).trigger("click");
+      });
+      //定时器的使用，自动开始
+      timer = setInterval(function () {
+        sw++;
+        if (sw == number.length) { sw = 0 };
+        number.eq(sw).trigger("click");
+      }, 2000);
+      //hover事件完成悬停和，左右图标的动画效果
+      slideBox.hover(function () {
+        $(".next,.prev").animate({
+          "opacity": 1,
+        }, 200);
+        clearInterval(timer);
+      }, function () {
+        $(".next,.prev").animate({
+          "opacity": 0.5,
+        }, 500);
+        timer = setInterval(function () {
+          sw++;
+          if (sw == number.length) { sw = 0 };
+          number.eq(sw).trigger("click");
+        }, 2000);
+      })
+
+    })
+  </script>
+
+</head>
+
+<div class="page">
+  <!-- SWIPER -->
+  <van-swipe :autoplay="3000">
+    <van-swipe-item v-for="(image, index) in images" :key="index">
+      <img v-lazy="image" />
+    </van-swipe-item>
+  </van-swipe>
+
+  <!-- HEADER -->
+  <div class="head-wrapper {{logoImage ? 'logo-mode' : ''}}">
+    <img wx:if="{{logoImage}}" class="logo" src="{{logoImage}}" bindtap="previewLogo"></img>
+    <div class="title">
+      <div class="name">{{orgName}}</div>
+      <div style="display: flex;">
+        <img class="navigate" id="modify" wx:if="{{isManager}}" src="/res/modify.png" bindtap="navigateTo"></img>
+        <img class="navigate" id="navigate" src="/res/navigate.png" bindtap="navigateTo"></img>
+      </div>
+    </div>
+  </div>
+
+  <!-- MORE -->
+  <div class="more">
+    <div wx:if="{{orgType}}" class="item" id="orgType" bindtap="navigateTo">
+      <i class="iconfont iconleixing"></i>
+      <pp>
+        组织类型：
+      </pp>
+    </div>
+    <div wx:if="{{locationAddress}}" class="item" id="locationAddress" bindtap="navigateTo">
+      <i class="iconfont icondizhi"></i>
+      <pp>
+       组织地址：
+      </pp>
+    </div>
+    <div wx:if="{{telNumble}}" class="item" id="telNumble" data-telNumble="{{telNumble}}" bindtap="navigateTo">
+      <i class="iconfont icondianhua"></i>
+      <pp>
+        联系电话：
+      </pp>
+    </div>
+    <div wx:if="{QQGroup}}" class="item" id="QQGroup" bindtap="navigateTo">
+      <i class="iconfont iconqq"></i>
+      <pp>
+      QQ 群号：
+      </pp>
+    </div>
+
+    <div wx:if="{wxmp}}" class="item" id="wxmp" bindtap="navigateTo">
+      <i class="iconfont iconweixin"></i>
+      <pp>
+        微信公众号：
+      </pp>
+    </div>
+  </div>
+
+  <!-- DESC -->
+  <div class="desc">
+    <div class="title">简介</div>
+    <!-- TODO: rich-text -->
+    <div class="content" id="orgDesc">
+    </div>
+
+  </div>
+
+
+</div>
+
+</html>

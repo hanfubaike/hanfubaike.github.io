@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>汉服组织查询系统 - 汉服百科</title>
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        body,
+        button,
+        input,
+        select,
+        textarea {
+            font: 12px/16px Verdana, Helvetica, Arial, sans-serif;
+        }
+
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+
+        #mapContainer {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .clusterBubble {
+            border-radius: 50%;
+            color: #fff;
+            font-weight: 500;
+            text-align: center;
+            opacity: 0.88;
+            background-image: linear-gradient(139deg, #e82f40 0%, #fb0e4f 100%);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.20);
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+
+        /* 组织信息页面 */
+        @font-face {
+            font-family: "iconfont";
+            src: url('//at.alicdn.com/t/font_1692848_ofchcawy11.eot?t=1597031491457');
+            /* IE9 */
+            src: url('//at.alicdn.com/t/font_1692848_ofchcawy11.eot?t=1597031491457#iefix') format('embedded-opentype'),
+                /* IE6-IE8 */
+                url('data:application/x-font-woff2;charset=utf-8;base64,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') format('woff2'),
+                url('//at.alicdn.com/t/font_1692848_ofchcawy11.woff?t=1597031491457') format('woff'),
+                url('//at.alicdn.com/t/font_1692848_ofchcawy11.ttf?t=1597031491457') format('truetype'),
+                /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+                url('//at.alicdn.com/t/font_1692848_ofchcawy11.svg?t=1597031491457#iconfont') format('svg');
+            /* iOS 4.1- */
+        }
+
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .iconlianxiren:before {
+            content: "\e654";
+        }
+
+        .icondianhua:before {
+            content: "\e614";
+        }
+
+        .iconshouji:before {
+            content: "\e70a";
+        }
+
+        .iconleixing:before {
+            content: "\e605";
+        }
+
+        .iconqq:before {
+            content: "\e601";
+        }
+
+        .iconfanhui:before {
+            content: "\e602";
+        }
+
+        .icondizhi:before {
+            content: "\e603";
+        }
+
+        .iconweixin:before {
+            content: "\e604";
+        }
+
+
+        .orgpage {
+            background: #f6f6f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            word-break: break-all;
+            width: 400px;
+            text-align: left;
+        }
+
+        swiper {
+            height: 215px;
+            width: 100vw;
+            background: #eee;
+        }
+
+        swiper .slide {
+            width: 100%;
+            height: 100%;
+        }
+
+        .head-wrapper {
+            position: relative;
+            background: #fff;
+        }
+
+        .head-wrapper.logo-mode .title {
+            padding: 5px 10px 10px 90px;
+        }
+
+        .head-wrapper .logo {
+            position: absolute;
+            top: -30px;
+            left: 5px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #eee;
+            border: 4px solid #fff;
+        }
+
+        .head-wrapper .title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 10px 10px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .head-wrapper .title .name {
+            font-size: 21px;
+        }
+
+        .head-wrapper .navigate {
+            width: 50px;
+            height: 50px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .more {
+            background: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px #eee;
+            font-size: 12px;
+        }
+
+        .more i {
+            padding-right: 2px;
+            color: #37aafc;
+        }
+
+        .desc {
+            min-height: 172.5px;
+            background: #fff;
+            padding: 10px;
+            box-shadow: 0 0 10px #eee;
+            margin-bottom: 10px;
+            white-space: initial;
+        }
+
+        .desc .title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .desc .title::before {
+            content: "|";
+            padding-right: 4px;
+            color: #37aafc;
+        }
+
+        .desc .content {
+            font-size: 14px;
+        }
+
+        .video-wrapper {
+            margin: 15px 0;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+        }
+
+        .video-wrapper .copyright {
+            font-size: 10px;
+            padding-top: 5px;
+            color: #aaa;
+        }
+
+        .video-wrapper .copyright .name {
+            color: #37aafc;
+        }
+
+        .adContainer {
+            width: 90%;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+        .layout {
+            width: 1000px;
+            margin: 30px auto;
+        }
+
+        ul,
+        ol,
+        li {
+            list-style: none;
+        }
+
+        .slide {
+            position: relative;
+            width: 400px;
+            height: 310px;
+            margin: auto;
+        }
+
+        .slide .outer {
+            position: relative;
+            overflow: hidden;
+            height: 300px;
+        }
+
+        .slide .outer .inner {
+            width: 2800px;
+            height: 100%;
+            position: absolute;
+            left: 0px;
+            top: 0;
+            padding-left: 0px;
+        }
+
+        .slide .outer .inner li {
+            float: left;
+            height: 100%;
+        }
+
+        .slide .outer .inner li a {
+            display: block;
+            position: relative;
+            width: 400px;
+            height: 100%;
+        }
+
+        .slide .outer .inner li a p {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            color: #fff;
+            font-size: 18px;
+            width: auto;
+            height: 80px;
+            line-height: 80px;
+            padding-left: 50px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+        }
+        .slide .outer .inner li a img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .slide .outer .dot {
+            margin-top: 265px;
+            text-align: center;
+        }
+
+        .slide .outer .dot li {
+            height: 6px;
+            width: 6px;
+            border-radius: 3px;
+            background-color: #d2cbcb;
+            display: inline-block;
+            margin: 0 3px;
+        }
+
+        .slide .outer .dot li.active {
+            background-color: #6e5ca5;
+        }
+
+        .slide .arrow-box {
+            position: absolute;
+            width: 100%;
+            height: 60px;
+            top: 150px;
+            left: 0;
+        }
+
+        .slide .arrow-box .arrow {
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            border-radius: 30px;
+            background-color: #dde2e6;
+            font-size: 60px;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .slide .arrow-box .arrow.arrow-l {
+            float: left;
+        }
+
+        .slide .arrow-box .arrow.arrow-r {
+            float: right;
+        }
+    </style>
+    <script src="http://libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
+    <!--引入Javascript API GL，参数说明参见下文-->
+    <script src="http://map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A"></script>
+    <script>
+        var center = ''
+        var map = {}
+        var infoWindow = {}
+
+        var MarkerStyle = {
+            //创建一个styleId为"myStyle"的样式（styles的子属性名即为styleId）
+            "myStyle": new TMap.MarkerStyle({
+                "width": 20,  // 点标记样式宽度（像素）
+                "height": 30, // 点标记样式高度（像素）
+                "src": 'res/marker.png',  //图片路径
+                //焦点在图片中的像素位置，一般大头针类似形式的图片以针尖位置做为焦点，圆形点以圆心位置为焦点
+                "anchor": { x: 16, y: 32 }
+            })
+        }
+
+        function setSwiper(){
+            var interval = 3000;                //轮播间隔时间
+            var arrowL = $('#arrow_l');         //左侧箭头
+            var arrowR = $('#arrow_r');         //右侧箭头
+
+            var slideBox = $('#slide');         //轮播图区域
+            var innerBox = $('#inner');         //内层大盒子
+            var img = innerBox.children('li');  //每个图片
+            var dot = $('#dot');                //小圆点盒子
+
+            var imgW = $(img[0]).outerWidth();  //每个li标签的宽度
+
+            var imgCount = img.length;                   //总图片个数（不同图片的个数）（实际dom上是有7张）
+            var i = 0;                          //初始化为第0张图片
+            timer = null;                       //定时器
+            if(imgCount < 2){
+                return
+            }
+            //自动轮播
+            timer = setInterval(function () {
+                i++;
+                innerBox.stop(false, true).animate({'left':-i*imgW+'px'},300)
+                dot.find('li').removeClass('active').eq(i-1).addClass('active')
+                
+                if(i >= imgCount){
+                    innerBox.animate({'left':0*imgW+'px'},0);
+                    dot.find('li').removeClass('active').eq(0).addClass('active')
+                    i = 0;
+                }
+            },interval)
+
+            //点击右侧箭头，播放下一张
+            arrowR.click(function () {
+                i++;
+                innerBox.stop(false, true).animate({'left':-i*imgW+'px'},300)
+                dot.find('li').removeClass('active').eq(i-1).addClass('active')
+                
+                if(i >= imgCount){
+                    innerBox.animate({'left':0*imgW+'px'},0);
+                    dot.find('li').removeClass('active').eq(0).addClass('active')
+                    i = 0;
+                }
+            })
+
+            //点击左侧箭头，播放上一张
+            arrowL.click(function () {
+                i--;
+                innerBox.stop(false, true).animate({'left':-i*imgW+'px'},300)
+                dot.find('li').removeClass('active').eq(i-1).addClass('active')
+                
+                if(i <= 1){
+                    innerBox.animate({'left':-imgCount*imgW+'px'},0);
+                    dot.find('li').removeClass('active').eq(imgCount-1).addClass('active')
+                    i = imgCount;
+                }
+            })
+
+            //鼠标经过轮播图区域时，清除定时器，停止自动轮播
+            slideBox.mouseenter(function () {
+                clearInterval(timer);
+            })
+
+            //鼠标离开轮播图区域时，重新启动自动轮播
+            slideBox.mouseleave(function () {
+                timer = setInterval(function () {
+                    i++;
+                    innerBox.stop(false, true).animate({'left':-i*imgW+'px'},300)
+                    dot.find('li').removeClass('active').eq(i-1).addClass('active')
+                    
+                    if(i >= imgCount){
+                        innerBox.animate({'left':0*imgW+'px'},0);
+                        dot.find('li').removeClass('active').eq(0).addClass('active')
+                        i = 0;
+                    }
+                },interval)
+            })
+        }
+
+        function DraggableOn(){
+            map.setDraggable(true)
+        }
+
+        function DraggableOff(){
+            map.setDraggable(false)
+        }
+
+        function setInfoWindow(evt) {
+            console.log(evt)
+            let geometry = evt.geometry
+            let orgname = geometry.properties.title.toString()
+            let orgid =  geometry.properties.orgid
+            //设置infoWindow
+            infoWindow.open(); //打开信息窗
+            infoWindow.setPosition(geometry.position);//设置信息窗位置
+            map.panTo(geometry.position)
+            map.panTo(map.unprojectFromContainer({x:800,y:60}))
+            //map.setDraggable(false)
+            //let orgNameLink = `<a style="font-size: 16px;" href="/org?orgname=${orgname}">${orgname}<a>`
+
+            let orgNameLink = `<div class="orgpage" id="orgpage">
+            <!-- SWIPER -->
+            <div class="slide" id="slide">
+                <div id="outer" class="outer">
+                    <ul id="inner" class="inner">
+                    </ul>
+
+        　　　　　　　<!--底部小圆点-->
+                    <ol class="dot" id="dot">
+                        <li class="active"></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ol>
+                </div>
+    　　　　    <!--左右两侧的点击切换按钮-->
+                <div class="arrow-box">
+                    <div class="arrow arrow-l" id="arrow_l">‹</div>
+                    <div class="arrow arrow-r" id="arrow_r">›</div>
+                </div>
+            </div>
+
+            <!-- HEADER -->
+            <div class="head-wrapper logo-mode">
+                <img class="logo" id="logoImage" src=""></img>
+                <div class="title">
+                <div class="name" id="orgName"></div>
+                <div style="display: flex;">
+                    <img class="navigate" id="navigate" src="/res/navigate.png" bindtap="navigateTo"></img>
+                </div>
+                </div>
+            </div>
+
+            <!-- MORE -->
+            <div class="more">
+                <div class="item" id="orgType" bindtap="navigateTo">
+                <i class="iconfont iconleixing"></i>
+                <pp>
+                    组织类型：
+                </pp>
+                </div>
+                <div class="item" id="locationAddress" bindtap="navigateTo">
+                <i class="iconfont icondizhi"></i>
+                <pp>
+                组织地址：
+                </pp>
+                </div>
+                <div class="item" id="telNumble" data-telNumble="{{telNumble}}" bindtap="navigateTo">
+                <i class="iconfont icondianhua"></i>
+                <pp>
+                    联系电话：
+                </pp>
+                </div>
+                <div class="item" id="QQGroup" bindtap="navigateTo">
+                <i class="iconfont iconqq"></i>
+                <pp>
+                QQ 群号：
+                </pp>
+                </div>
+
+                <div class="item" id="wxmp" bindtap="navigateTo">
+                <i class="iconfont iconweixin"></i>
+                <pp>
+                    微信公众号：
+                </pp>
+                </div>
+            </div>
+
+            <!-- DESC -->
+            <div class="desc">
+                <div class="title">简介</div>
+                <!-- TODO: rich-text -->
+                <div class="content" id="orgDesc">
+                </div>
+
+            </div>
+
+
+            </div>`
+
+            infoWindow.setContent(orgNameLink);//设置信息窗内容
+            let orgpage = $('#orgpage')
+            orgpage.mouseenter(function(){
+                map.setDraggable(false)
+            })
+            orgpage.mouseleave(function(){
+                map.setDraggable(true)
+            })
+            let getUrl = "http://master-xzb1z.service.tcloudbase.com/orginfo"
+            $.get(getUrl, { "id": orgid }, function (res) {
+                console.log(res)
+                let orgInfo = res.orgInfo
+                $('#orgName').text(`${orgInfo.orgName}`)
+                $('#logoImage').attr("src", `${orgInfo.logoList[0]}`)
+                let imgBanner = ""
+                for (let x in orgInfo.orgImageList) {
+                    let imgUrl = orgInfo.orgImageList[x]
+                    imgBanner +=`<li><a href="${imgUrl}" target="_blank"><img src="${imgUrl}"></a></li>`
+                }
+                $('#inner').html(`${imgBanner}`)
+                setSwiper()
+                $('#orgType pp').text(`组织类型：${orgInfo.orgType}`)
+                $('#locationAddress pp').text(`组织地址：${orgInfo.locationAddress}`)
+                $('#telNumble pp').text(`联系电话：${orgInfo.telNumble}`)
+                $('#QQGroup pp').text(`QQ群号：${orgInfo.QQGroup}`)
+                $('#wxmp pp').text(`微信公众号：${orgInfo.wxmp}`)
+                $('#orgDesc').text(`${orgInfo.orgDesc}`)
+
+            })
+        }
+
+        function setMarkers(data) {
+            let orglist = data.orgList
+            console.log(orglist)
+            //创建并初始化MultiMarker
+            var markerLayer = new TMap.MultiMarker({
+                map: map,  //指定地图容器
+                //样式定义
+                styles: MarkerStyle,
+                //点标记数据数组
+                geometries: [
+                ]
+            });
+            var markerList = []
+            var positionList = []
+            for (let x in orglist) {
+                let lat = orglist[x].longLatiute.coordinates[1]
+                let lng = orglist[x].longLatiute.coordinates[0]
+                let name = orglist[x].orgName
+                let id = orglist[x]._id
+                positionList.push({
+                    position: new TMap.LatLng(lat, lng)
+                })
+                let marker = {
+                    "id": x,   //点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
+                    "styleId": 'myStyle',  //指定样式id
+                    "position": new TMap.LatLng(lat, lng),  //点标记坐标位置
+                    "properties": {//自定义属性
+                        "title": name,
+                        "orgid": id
+                    }
+                }
+                markerList.push(marker)
+
+            }
+            markerLayer.on("click", setInfoWindow)
+            //markerLayer.add(markerList)
+
+
+            //创建点聚合对象
+            var markerCluster = new TMap.MarkerCluster({
+                id: 'cluster', //图层id
+                map: map,       //设置点聚合显示在哪个map对象中（创建map的段落省略）
+                enableDefaultStyle: false,   //使用默认样式
+                minimumClusterSize: 2,  //最小聚合点数：2个
+                geometries: markerList, //....将您所有要打到图中的坐标点传入进来
+                zoomOnClick: true,  //点击聚合数字放大展开
+                gridSize: 60,       //聚合算法的可聚合距离，即距离小于该值的点会聚合至一起，默认为60，以像素为单位
+                averageCenter: false, //每个聚和簇的中心是否应该是聚类中所有标记的平均值
+                maxZoom: 16 //采用聚合策略的最大缩放级别，若地图缩放级别大于该值，则不进行聚合，标点将全部被展开
+            });
+            /*
+            var label = new TMap.MultiLabel({
+                    id: 'label-layer',
+                    map: map,
+                    enableCollision:true,
+                    styles: {
+                        'label': new TMap.LabelStyle({
+                            'color': '#3777FF', //颜色属性
+                            'size': 12, //文字大小属性
+                            'offset': { x: 0, y: 0 }, //文字偏移属性单位为像素
+                            'angle': 0, //文字旋转属性
+                            'alignment': 'center', //文字水平对齐属性
+                            'verticalAlignment': 'middle' //文字垂直对齐属性
+                        })
+                    },
+                    geometries: [{
+                        'id': 'label', //点图形数据的标志信息
+                        'styleId': 'label', //样式id
+                        'position': new TMap.LatLng(39.954104, 116.357503),  //点标记坐标位置
+                        'content': '腾讯北京总部', //标注文本
+                        'properties': { //标注点的属性数据
+                            'title': 'label'
+                        }
+                    }]
+                })
+                */
+            //初始化infoWindow
+            infoWindow = new TMap.InfoWindow({
+                map: map,
+                position: new TMap.LatLng(39.984104, 116.307503),
+                zIndex:2,
+                offset: { x: 0, y: -48 } //设置信息窗相对position偏移像素，为了使其显示在Marker的上方
+            });
+            infoWindow.close();//初始关闭信息窗关闭
+
+            var clusterBubbleList = [];
+            var markerGeometries = [];
+            var marker = null;
+
+            // 监听聚合簇变化
+            markerCluster.on('cluster_changed', function (e) {
+                // 销毁旧聚合簇生成的覆盖物
+                if (clusterBubbleList.length) {
+                    clusterBubbleList.forEach(function (item) {
+                        item.destroy();
+                    })
+                    clusterBubbleList = [];
+                }
+                markerGeometries = [];
+
+                // 根据新的聚合簇数组生成新的覆盖物和点标记图层
+                var clusters = markerCluster.getClusters();
+                clusters.forEach(function (item) {
+                    if (item.geometries.length > 1) {
+                        let clusterBubble = new ClusterBubble({
+                            map,
+                            position: item.center,
+                            content: item.geometries.length,
+                        });
+                        clusterBubble.on('click', () => {
+                            map.fitBounds(item.bounds);
+                        });
+                        clusterBubbleList.push(clusterBubble);
+                    } else {
+                        markerGeometries.push(item.geometries[0]);
+                    }
+                });
+
+                if (markerLayer) {
+                    // 已创建过点标记图层，直接更新数据
+                    markerLayer.setGeometries(markerGeometries);
+                } else {
+                    // 创建点标记图层
+                    markerLayer = new TMap.MultiMarker({
+                        map,
+                        styles: MarkerStyle,
+                        geometries: markerGeometries
+                    });
+                    markerLayer.on("click", setInfoWindow)
+                }
+            });
+
+
+            //监听标注点击事件
+            markerCluster.on("click", function (evt) {
+                console.log(evt)
+                let geometries = evt.cluster.geometries
+                //设置infoWindow
+                infoWindow.open(); //打开信息窗
+                infoWindow.setPosition(geometries[0].position);//设置信息窗位置
+                infoWindow.setContent(geometries[0].properties.title.toString());//设置信息窗内容
+                for (let x in geometries) {
+
+                }
+
+
+            })
+        }
+
+        //地图初始化函数，本例取名为init，开发者可根据实际情况定义
+        function initMap() {
+            //定义地图中心点坐标
+            var center = new TMap.LatLng(39.984120, 116.307484)
+            //center = new TMap.LatLng(37.846664,112.553555);
+            //定义map变量，调用 TMap.Map() 构造函数创建地图
+            map = new TMap.Map(document.getElementById('container'), {
+                center: center,//设置地图中心点坐标
+                zoom: 5,   //设置地图缩放级别
+                pitch: 0,  //设置俯仰角
+                rotation: 0,    //设置地图旋转角度
+                mapStyleId: "style3"
+            });
+            //map.on("mousedown",function(res){
+                //console.log(res)
+                //map.setDraggable(true)
+            //})
+           // map.on("touchstart",function(res){
+                //console.log(res)
+                //map.setDraggable(true)
+            //})
+            map.on("dragend",function(res){
+                infoWindow.close()
+            })
+            let postUrl = "http://master-xzb1z.service.tcloudbase.com/orglist"
+            $.get(postUrl, "", setMarkers)
+
+
+            // 以下代码为基于DOMOverlay实现聚合点气泡
+            function ClusterBubble(options) {
+                TMap.DOMOverlay.call(this, options);
+            }
+
+            ClusterBubble.prototype = new TMap.DOMOverlay();
+
+            ClusterBubble.prototype.onInit = function (options) {
+                this.content = options.content;
+                this.position = options.position;
+            };
+
+            // 销毁时需要删除监听器
+            ClusterBubble.prototype.onDestroy = function () {
+                this.dom.removeEventListener('click', this.onClick);
+                this.removeAllListeners();
+            };
+
+            ClusterBubble.prototype.onClick = function () {
+                this.emit('click');
+            };
+
+            // 创建气泡DOM元素
+            ClusterBubble.prototype.createDOM = function () {
+                var dom = document.createElement('div');
+                dom.classList.add('clusterBubble');
+                dom.innerText = this.content;
+                dom.style.cssText = [
+                    'width: ' + (40 + parseInt(this.content) * 2) + 'px;',
+                    'height: ' + (40 + parseInt(this.content) * 2) + 'px;',
+                    'line-height: ' + (40 + parseInt(this.content) * 2) + 'px;',
+                ].join(' ');
+
+                // 监听点击事件，实现zoomOnClick
+                this.onClick = this.onClick.bind(this);
+                dom.addEventListener('click', this.onClick);
+                return dom;
+            };
+
+            ClusterBubble.prototype.updateDOM = function () {
+                if (!this.map) {
+                    return;
+                }
+                // 经纬度坐标转容器像素坐标
+                let pixel = this.map.projectToContainer(this.position);
+
+                // 使文本框中心点对齐经纬度坐标点
+                let left = pixel.getX() - this.dom.clientWidth / 2 + 'px';
+                let top = pixel.getY() - this.dom.clientHeight / 2 + 'px';
+                this.dom.style.transform = `translate(${left}, ${top})`;
+
+                this.emit('dom_updated');
+            };
+
+            window.ClusterBubble = ClusterBubble;
+
+        }
+    </script>
+</head>
+<!-- 页面载入后，调用init函数 -->
+
+<body onload="initMap()">
+    <!-- 定义地图显示容器 -->
+    <div id="container"></div>
+</body>
+
+</html>
