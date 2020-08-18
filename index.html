@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta content="always" name="referrer">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
@@ -353,6 +353,7 @@
             left: 10px;
             z-index: 1001;
             width: 18rem;
+            box-shadow: 0 2px 2px rgba(0,0,0,.15);
         }
     </style>
     <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
@@ -365,6 +366,7 @@
         var map = {}
         var infoWindow = {}
         var orgList = []
+        var orginZoom = 4.5
 
         getUrlParam = function (name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -473,15 +475,22 @@
         }
 
         function setInfoWindow(orgname,orgid,latLng,isSearch=false) {
-            history.replaceState("","",`?orgname=${orgname}`)
-            //history.pushState("","",`?orgname=${orgname}`)
+            if(getUrlParam("orgname")){
+                history.replaceState("","",`?orgname=${orgname}`)
+            }else{
+                history.pushState("","",`?orgname=${orgname}`)
+            }
+            
+            //
             let mapPoint = {}
             let pageHeight = $(window).height()
+            
 
             //设置infoWindow
             infoWindow.open(); //打开信息窗
             infoWindow.setPosition(latLng);//设置信息窗位置
             if(isSearch){
+                orginZoom = map.getZoom()
                 map.setZoom(14)
             }
             map.panTo(latLng)
@@ -706,6 +715,10 @@
                 offset: { x: 0, y: -48 } //设置信息窗相对position偏移像素，为了使其显示在Marker的上方
             });
             infoWindow.close();//初始关闭信息窗关闭
+            infoWindow.on("closeclick",function(){
+                map.zoomTo(orginZoom)
+                history.replaceState("","","/")
+            })
             if(thisOrgjson.orgName){
                 setInfoWindow(thisOrgjson.orgName,thisOrgjson.orgid,thisOrgjson.position,true)
             }
@@ -777,12 +790,12 @@
         //地图初始化函数，本例取名为init，开发者可根据实际情况定义
         function initMap() {
             //定义地图中心点坐标
-            var center = new TMap.LatLng(39.984120, 116.307484)
+            var center = new TMap.LatLng(35.71567199798269, 107.76217916748408)
             //center = new TMap.LatLng(37.846664,112.553555);
             //定义map变量，调用 TMap.Map() 构造函数创建地图
             map = new TMap.Map(document.getElementById('container'), {
                 center: center,//设置地图中心点坐标
-                zoom: 5,   //设置地图缩放级别
+                zoom: orginZoom,   //设置地图缩放级别
                 pitch: 0,  //设置俯仰角
                 rotation: 0,    //设置地图旋转角度
                 mapStyleId: "style3"
@@ -795,8 +808,9 @@
                 //console.log(res)
                 //map.setDraggable(true)
             //})
-            map.on("dragend",function(res){
+            map.on("click",function(res){
                 infoWindow.close()
+                history.replaceState("","","/")
             })
             let postUrl = "//master-xzb1z.service.tcloudbase.com/orgList"
             $.get(postUrl, "", setMarkers)
@@ -868,11 +882,11 @@
 
     <div class="page__bd" id="searchPart">
         <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
-        <div class="weui-search-bar" id="searchBar">
+        <div class="weui-search-bar" id="searchBar" style="background-color: #fff;">
             <form class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
-                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="搜索" required/>
+                    <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="请输入组织名或城市名" required/>
                     <a href="javascript:" class="weui-icon-clear" id="searchClear"></a>
                 </div>
                 <label class="weui-search-bar__label" id="searchText">
@@ -891,6 +905,8 @@
     <script type="text/javascript">
 
         function clickTips(self){
+            let searchResult = $('#searchResult')
+            searchResult.hide();
             let isSearch = true
             let orgName = $(self).data('orgname')
             let orgid = $(self).data('orgid')
@@ -917,6 +933,13 @@
                 $searchBar.removeClass('weui-search-bar_focusing');
                 $searchText.show();
             }
+
+            function clearInput(){
+                $searchResult.hide();
+                history.replaceState("","","/")
+                infoWindow.close()
+                map.zoomTo(orginZoom)
+            }
     
             $searchText.on('click', function(){
                 $searchBar.addClass('weui-search-bar_focusing');
@@ -924,7 +947,10 @@
             });
             $searchInput
                 .on('blur', function () {
-                    if(!this.value.length) cancelSearch();
+                    if(!this.value.length){
+                        clearInput();
+                        cancelSearch();
+                    } 
                 })
                 .on('input', function(){
                     if(this.value.length) {
@@ -936,12 +962,12 @@
                             if(i >10){
                                 break
                             }
-                            i++
                             let orgName = orgList[x].orgName
                             let orgid = orgList[x]._id
                             let lat = orgList[x].longLatiute.coordinates[1]
                             let lng = orgList[x].longLatiute.coordinates[0]
                             if(orgName.indexOf(value) > -1){
+                                i++
                                 tempHtml += `<div class="weui-cell weui-cell_active weui-cell_access" onclick="clickTips(this)" data-orgid="${orgid}" data-orgname="${orgName}" data-lat="${lat}" data-lng="${lng}">
                                                     <div class="weui-cell__bd weui-cell_primary">
                                                         <p>${orgName}</p>
@@ -957,7 +983,7 @@
                         
                     } else {
                         //$searchResult.children(".weui-cell_access").remove()
-                        $searchResult.hide();
+                        clearInput()
                     }
                 })
             ;
