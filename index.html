@@ -492,6 +492,10 @@
             if(isSearch){
                 orginZoom = map.getZoom()
                 map.setZoom(14)
+                infoWindow.on("closeclick",function(){
+                    map.zoomTo(orginZoom)
+                    history.replaceState("","","/")
+                })
             }
             map.panTo(latLng)
             mapPoint = map.projectToContainer(latLng)
@@ -716,7 +720,6 @@
             });
             infoWindow.close();//初始关闭信息窗关闭
             infoWindow.on("closeclick",function(){
-                map.zoomTo(orginZoom)
                 history.replaceState("","","/")
             })
             if(thisOrgjson.orgName){
