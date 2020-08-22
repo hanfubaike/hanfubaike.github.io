@@ -352,9 +352,35 @@
             top: 10px;
             left: 10px;
             z-index: 1001;
-            width: 18rem;
+            width: 19rem;
             box-shadow: 0 2px 2px rgba(0,0,0,.15);
         }
+
+        .weui-search-bar__box {
+            padding-left: 54px !important;
+        }
+        .weui-search-bar__box .weui-icon-search {
+            left: 32px !important;
+        }
+        .weui-search-bar__form .logo {
+            display: block;
+            position: fixed;
+            width: 34px;
+            height: 34px;
+            z-index: 99999;
+            cursor: pointer;
+
+        }
+        .weui-search-bar__box .weui-search-bar__input{
+            font-size: 15px !important;
+        }
+        .weui-search-bar__label span{
+            font-size: 15px !important;
+        }
+        .weui-search-bar__cancel-btn{
+            font-size: 15px !important;
+        }
+        
     </style>
     <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
     <!--引入Javascript API GL，参数说明参见下文-->
@@ -887,6 +913,7 @@
         <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
         <div class="weui-search-bar" id="searchBar" style="background-color: #fff;">
             <form class="weui-search-bar__form">
+                <img class="logo" src="/res/logo.png">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
                     <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="请输入组织名或城市名" required/>
