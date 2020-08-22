@@ -380,6 +380,9 @@
         .weui-search-bar__cancel-btn{
             font-size: 15px !important;
         }
+        tips{
+            font-size: 15px !important;
+        }
         
     </style>
     <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
@@ -994,13 +997,29 @@
                             }
                             let orgName = orgList[x].orgName
                             let orgid = orgList[x]._id
+                            let locationAddress = orgList[x].locationAddress
                             let lat = orgList[x].longLatiute.coordinates[1]
                             let lng = orgList[x].longLatiute.coordinates[0]
-                            if(orgName.indexOf(value) > -1){
+                            let nameIndex = orgName.indexOf(value)
+                            let addressIndex = locationAddress.indexOf(value)
+                            let orgTips1 = ""
+                            let orgTips2 = ""
+                            let addressTips1 = ""
+                            let addressTips2 = ""
+                            if(nameIndex > -1 || addressIndex > -1){
+                                if(nameIndex > -1){
+                                    orgTips1 = orgName.split(value)[0]
+                                    orgTips2 = orgName.split(value)[1]
+                                }else if(addressIndex > -1){
+                                    addressTips1 = locationAddress.split(value)[0]
+                                    addressTips2 = locationAddress.split(value)[1]
+                                }
+                                
                                 i++
                                 tempHtml += `<div class="weui-cell weui-cell_active weui-cell_access" onclick="clickTips(this)" data-orgid="${orgid}" data-orgname="${orgName}" data-lat="${lat}" data-lng="${lng}">
-                                                    <div class="weui-cell__bd weui-cell_primary">
+                                                    <div class="weui-cell__bd weui-cell_primary tips">
                                                         <p>${orgName}</p>
+                                                        <p style="font-size:12px;left:4px;color: #999;">${locationAddress}</p>
                                                     </div>
                                                 </div>`
                                 
