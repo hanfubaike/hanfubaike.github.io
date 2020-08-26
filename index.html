@@ -30,6 +30,7 @@
         #container {
             width: 100%;
             height: 100%;
+            z-index: 1;
         }
 
         #mapContainer {
@@ -357,14 +358,14 @@
         }
 
         .weui-search-bar__box {
-            padding-left: 54px !important;
+            padding-left: 58px !important;
         }
         .weui-search-bar__box .weui-icon-search {
             left: 32px !important;
         }
         .weui-search-bar__form .logo {
             display: block;
-            position: fixed;
+            position: absolute;
             width: 34px;
             height: 34px;
             z-index: 99999;
@@ -402,39 +403,49 @@
             background-size: 12px 21.5px;
             z-index: 9999;
         }
-        .map_zoom {
-            right: 15px;
-            width: 36px;
-            height: 84px;
-            position: absolute;
-            border-radius: 4px;
-            background-color: #fff
-        }
-
-        .map_zoomin, .map_zoomout {
-            display: block;
-            height: 41px;
-            background: #fff url(data:image/png;base64,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) no-repeat;
-            background-size: 48px 329px;
-            cursor: pointer;
-            margin: 0 7px;
-        }
-        .map_zoomout {
-            background-position: -30px 13px;
-        }
-        .map_zoomin {
-            border-bottom: 1px solid #ddd;
-            background-position: -1px 13px;
-        }
         .map{
             width: 100%;
             height: 100%;
+        }
+        #btn-positioning {
+            vertical-align: bottom;
+            position: fixed;
+            bottom: 42px;
+            left: 16px;
+            border: 0;
+            box-shadow: 0 0 0;
+            -webkit-box-shadow: 0 0 0;
+            background-color: transparent;
+            z-index: 3;
+        }
+        .icon-positioning-3 {
+            background: url(//3gimg.qq.com/lightmap/mobilemap/common/images/map_position_small_normal_948d1bc.png) no-repeat center center;
+            display: block;
+            background-size: 52px 52px;
+            width: 52px;
+            height: 52px;
+        }
+        .icon-positioning-3-cover {
+            display: inline-block;
+            width: 42px;
+            height: 42px;
+            margin: 5px;
+            border-radius: 21px;
+            -webkit-border-radius: 21px;
+        }
+        .icon-positioning-3-cover:active {
+            background: rgba(0,0,0,.1);
+        }
+        .zoomcontrol{
+            bottom: 100px;
         }
     </style>
     <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
     <script src="//cdn.staticfile.org/history.js/1.8/bundled-uncompressed/html5/jquery.history.js"></script>
     <!--引入Javascript API GL，参数说明参见下文-->
     <script src="//map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A"></script>
+    <script src="//3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
+    
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/2.0.1/weui.min.css">
     <script type="text/javascript" src="//res.wx.qq.com/open/libs/weuijs/1.2.1/weui.min.js"></script>
     <script>
@@ -444,24 +455,36 @@
             if (r != null) return unescape(r[2]); return null;
         }
 
-
+        function getLocation(){
+            geolocation.getLocation(function(res){
+                console.log(res)
+                center = new TMap.LatLng(res.lat, res.lng)
+                map.easeTo({zoom:14,center:center},{duration: 1000})
+            })
+        }
+        function restzoom(){
+            console.log("restzoom")
+            map.zoomTo(orginZoom)
+        }
+        var geolocation = new qq.maps.Geolocation("AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A", "myapp");
         var thisOrgName = decodeURI(getUrlParam("orgname"))
         var pagetitle = document.title
         var center = ''
-        var map = {}
+        var map,control
         var infoWindow = {}
         var orgList = []
-        var orginZoom = 4.5;
+        var orginZoom = 4;
         (function(window,undefined){
 
             // Bind to StateChange Event
             History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
                 var State = History.getState(); // Note: We are using History.getState() instead of event.state
-                console.log(State)
+                //console.log(State)
                 if(State.url == `${window.location.origin}/`){
                     $('#common_content_box').html()
+                    $('#common_content_box').hide()
                     $("#searchPart").show()
-                    $("#container").show()
+                    $("#map").show()
                     if(infoWindow.close){
                         infoWindow.close()
                     }
@@ -580,8 +603,8 @@
         var mobile_flag = isMobile();
 
         var MarkerStyle = {
-            //创建一个styleId为"myStyle"的样式（styles的子属性名即为styleId）
-            "myStyle": new TMap.MarkerStyle({
+            //创建一个styleId为"markerStyle"的样式（styles的子属性名即为styleId）
+            "markerStyle": new TMap.MarkerStyle({
                 "width": 20,  // 点标记样式宽度（像素）
                 "height": 30, // 点标记样式高度（像素）
                 "src": 'res/marker.png',  //图片路径
@@ -696,7 +719,7 @@
 
             if(mobile_flag){
                 $('#common_content_box').html(orgPageHtml)
-                $("#searchPart").hide()
+                $('#common_content_box').show()
                 $("#map").hide()
                 $(".arrow-box").hide()
             }else{
@@ -705,17 +728,13 @@
                 infoWindow.setPosition(latLng);//设置信息窗位置
                 let orgNameLink = `<div style="width:400px">${orgPageHtml}</div>`
                 infoWindow.setContent(orgNameLink);//设置信息窗内容
+                $(".back").hide()
                 if(isSearch){
                     orginZoom = map.getZoom()
                     map.setZoom(14)
-                    infoWindow.on("closeclick",function(){
-                        map.zoomTo(orginZoom)
-                        History.replaceState(null,pagetitle,"/")
-                    })
+                    infoWindow.isSearch = true
                 }else{
-                    infoWindow.on("closeclick",function(){
-                        History.replaceState(null,pagetitle,"/")
-                    })
+                    infoWindow.isSearch = false
                 }
                 
                 orgpage.mouseenter(function(){
@@ -804,7 +823,7 @@
                 })
                 let marker = {
                     "id": x,   //点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
-                    "styleId": 'myStyle',  //指定样式id
+                    "styleId": 'markerStyle',  //指定样式id
                     "position": new TMap.LatLng(lat, lng),  //点标记坐标位置
                     "properties": {//自定义属性
                         "title": name,
@@ -828,7 +847,7 @@
                 geometries: markerList, //....将您所有要打到图中的坐标点传入进来
                 zoomOnClick: true,  //点击聚合数字放大展开
                 gridSize: 60,       //聚合算法的可聚合距离，即距离小于该值的点会聚合至一起，默认为60，以像素为单位
-                averageCenter: false, //每个聚和簇的中心是否应该是聚类中所有标记的平均值
+                averageCenter: true, //每个聚和簇的中心是否应该是聚类中所有标记的平均值
                 maxZoom: 16 //采用聚合策略的最大缩放级别，若地图缩放级别大于该值，则不进行聚合，标点将全部被展开
             });
             /*
@@ -866,6 +885,9 @@
             });
             infoWindow.close();//初始关闭信息窗关闭
             infoWindow.on("closeclick",function(){
+                if(infoWindow.isSearch){
+                    map.zoomTo(orginZoom)
+                }
                 History.replaceState(null,pagetitle,"/")
             })
             if(thisOrgjson.orgName){
@@ -947,8 +969,7 @@
                 zoom: orginZoom,   //设置地图缩放级别
                 pitch: 0,  //设置俯仰角
                 rotation: 0,    //设置地图旋转角度
-                mapStyleId: "style3",
-                showControl:false
+                mapStyleId: "style3"
             });
             //map.on("mousedown",function(res){
                 //console.log(res)
@@ -958,71 +979,74 @@
                 //console.log(res)
                 //map.setDraggable(true)
             //})
+            map.removeControl(TMap.constants.DEFAULT_CONTROL_ID.SCALE);
+            control = map.getControl(TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
+            control.setPosition(TMap.constants.CONTROL_POSITION.BOTTOM_RIGHT);
             map.on("click",function(res){
                 infoWindow.close()
                 History.replaceState(null,pagetitle,"/")
             })
             let postUrl = "//master-xzb1z.service.tcloudbase.com/orgList"
+
             $.get(postUrl, "", setMarkers)
 
-
-            // 以下代码为基于DOMOverlay实现聚合点气泡
-            function ClusterBubble(options) {
-                TMap.DOMOverlay.call(this, options);
-            }
-
-            ClusterBubble.prototype = new TMap.DOMOverlay();
-
-            ClusterBubble.prototype.onInit = function (options) {
-                this.content = options.content;
-                this.position = options.position;
-            };
-
-            // 销毁时需要删除监听器
-            ClusterBubble.prototype.onDestroy = function () {
-                this.dom.removeEventListener('click', this.onClick);
-                this.removeAllListeners();
-            };
-
-            ClusterBubble.prototype.onClick = function () {
-                this.emit('click');
-            };
-
-            // 创建气泡DOM元素
-            ClusterBubble.prototype.createDOM = function () {
-                var dom = document.createElement('div');
-                dom.classList.add('clusterBubble');
-                dom.innerText = this.content;
-                dom.style.cssText = [
-                    'width: ' + (40 + parseInt(this.content) * 2) + 'px;',
-                    'height: ' + (40 + parseInt(this.content) * 2) + 'px;',
-                    'line-height: ' + (40 + parseInt(this.content) * 2) + 'px;',
-                ].join(' ');
-
-                // 监听点击事件，实现zoomOnClick
-                this.onClick = this.onClick.bind(this);
-                dom.addEventListener('click', this.onClick);
-                return dom;
-            };
-
-            ClusterBubble.prototype.updateDOM = function () {
-                if (!this.map) {
-                    return;
-                }
-                // 经纬度坐标转容器像素坐标
-                let pixel = this.map.projectToContainer(this.position);
-
-                // 使文本框中心点对齐经纬度坐标点
-                let left = pixel.getX() - this.dom.clientWidth / 2 + 'px';
-                let top = pixel.getY() - this.dom.clientHeight / 2 + 'px';
-                this.dom.style.transform = `translate(${left}, ${top})`;
-
-                this.emit('dom_updated');
-            };
-
-            window.ClusterBubble = ClusterBubble;
-
         }
+
+        // 以下代码为基于DOMOverlay实现聚合点气泡
+        function ClusterBubble(options) {
+            TMap.DOMOverlay.call(this, options);
+        }
+
+        ClusterBubble.prototype = new TMap.DOMOverlay();
+
+        ClusterBubble.prototype.onInit = function (options) {
+            this.content = options.content;
+            this.position = options.position;
+        };
+
+        // 销毁时需要删除监听器
+        ClusterBubble.prototype.onDestroy = function () {
+            this.dom.removeEventListener('click', this.onClick);
+            this.removeAllListeners();
+        };
+
+        ClusterBubble.prototype.onClick = function () {
+            this.emit('click');
+        };
+
+        // 创建气泡DOM元素
+        ClusterBubble.prototype.createDOM = function () {
+            var dom = document.createElement('div');
+            dom.classList.add('clusterBubble');
+            dom.innerText = this.content;
+            dom.style.cssText = [
+                'width: ' + (40 + parseInt(this.content) * 2) + 'px;',
+                'height: ' + (40 + parseInt(this.content) * 2) + 'px;',
+                'line-height: ' + (40 + parseInt(this.content) * 2) + 'px;',
+            ].join(' ');
+
+            // 监听点击事件，实现zoomOnClick
+            this.onClick = this.onClick.bind(this);
+            dom.addEventListener('click', this.onClick);
+            return dom;
+        };
+
+        ClusterBubble.prototype.updateDOM = function () {
+            if (!this.map) {
+                return;
+            }
+            // 经纬度坐标转容器像素坐标
+            let pixel = this.map.projectToContainer(this.position);
+
+            // 使文本框中心点对齐经纬度坐标点
+            let left = pixel.getX() - this.dom.clientWidth / 2 + 'px';
+            let top = pixel.getY() - this.dom.clientHeight / 2 + 'px';
+            this.dom.style.transform = `translate(${left}, ${top})`;
+
+            this.emit('dom_updated');
+        };
+
+        window.ClusterBubble = ClusterBubble;
 
     </script>
 </head>
@@ -1035,7 +1059,7 @@
             <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
             <div class="weui-search-bar" id="searchBar" style="background-color: #fff;">
                 <form class="weui-search-bar__form">
-                    <img class="logo" src="/res/logo.png">
+                    <img class="logo" src="/res/logo.png" onclick="restzoom()">
                     <div class="weui-search-bar__box">
                         <i class="weui-icon-search"></i>
                         <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="请输入组织名或城市名" required/>
@@ -1056,10 +1080,11 @@
         <div id="container">
 
         </div>
-        <div class="map_zoom map_icon_shadow" style="bottom: 135px;">
-            <a href="javascript:void(0);" class="map_zoomin" id="zoomin"></a>
-            <a href="javascript:void(0);" class="map_zoomout" id="zoomout"></a>
-        </div>
+        <a id="btn-positioning" onclick="getLocation()">
+            <i class="icon-positioning icon-positioning-3 highlight">
+                <i class="icon-positioning-3-cover"></i>
+            </i>
+            </a>
     </div>
     <div class="common_content_box" id="common_content_box"></div>
     <script type="text/javascript">
@@ -1076,12 +1101,6 @@
             setInfoWindow(orgName,orgid,latLng,isSearch)
             //map.zoomTo(8)
         }
-        $('#zoomin').click(function(){
-                map.zoomTo(map.getZoom()+1)
-            })
-        $('#zoomout').click(function(){
-            map.zoomTo(map.getZoom()-1)
-        })
         $(function(){
             var $searchBar = $('#searchBar'),
                 $searchResult = $('#searchResult'),
