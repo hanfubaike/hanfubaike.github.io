@@ -801,23 +801,35 @@
                 orgpage.mouseleave(function(){
                     map.setDraggable(true)
                 })
-                let mapStatus = {center:latLng}
+                let mapStatus = {center:latLng,zoom:map.getZoom()}
                 //map.panTo(latLng)
-                if(infoWindow.isSearch){
+                if(thisOrgInfo.isSearch){
                     orginZoom = map.getZoom()
                     mapStatus.zoom = 12
+
                     //map.setZoom(12)
                 }else{
-                    infoWindow.isSearch = false
                 }
-                map.easeTo(mapStatus,{duration: duration})
+                //map.easeTo(mapStatus,{duration: duration})
                 
-                //map.zoomTo(mapStatus.zoom)
-                setTimeout(() => {
-                    infoWindow.open(); //打开信息窗
-                    mapPoint = map.projectToContainer(latLng)
-                    map.panTo(map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+80}),1000)
-                }, duration);
+                //map.setZoom(mapStatus.zoom)
+                infoWindow.open(); //打开信息窗
+                mapPoint = map.projectToContainer(latLng)
+                let finalCenter = {}
+                //map.setCenter(latLng)
+                //finalCenter = map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+80})
+                let bounds = map.getBounds()
+                let center = map.getCenter()
+                let neLat = bounds.getNorthEast().lat
+                let swLat = bounds.getSouthWest().lat
+                let tmpLat =  ((((neLat - center.lat)/(20-map.getZoom()))*(20 - mapStatus.zoom))/((20 - mapStatus.zoom)*(20 - mapStatus.zoom)*40))*map.getScale()
+                let finalLat = latLng.lat + tmpLat
+                console.log(`neLat ${neLat} tmpLat ${tmpLat} center.lat ${center.lat} latLng ${latLng},finalLat ${finalLat}`)
+                finalCenter = new TMap.LatLng(finalLat, latLng.lng)
+                
+                mapStatus.center = finalCenter
+                //map.panTo(finalCenter,1000)
+                map.easeTo(mapStatus,{duration: duration})
                 
             }
 
@@ -966,15 +978,15 @@
             });
             infoWindow.close();//初始关闭信息窗关闭
             infoWindow.on("closeclick",function(){
-                if(infoWindow.isSearch){
+                if(thisOrgInfo.isSearch){
                     map.zoomTo(orginZoom)
-                    infoWindow.isSearch = false
+                    thisOrgInfo.isSearch = false
                 }
                 History.replaceState(null,pagetitle,"/")
             })
             if(thisOrgInfo.orgName){
                 console.log("搜索")
-                infoWindow.isSearch = true
+                thisOrgInfo.isSearch = true
                 openOrgPage(true)
                 //setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng,true)
             }else{
@@ -1203,7 +1215,7 @@
         function clickTips(self){
             let searchResult = $('#searchResult')
             searchResult.hide();
-            infoWindow.isSearch = true
+            let isSearch = true
             let orgName = $(self).data('orgname')
             let orgid = $(self).data('orgid')
             let lat = $(self).data('lat')
@@ -1212,7 +1224,8 @@
             thisOrgInfo = {
                 orgName,
                 orgid,
-                latLng
+                latLng,
+                isSearch
             }
             openOrgPage()
             //setInfoWindow(orgName,orgid,latLng,isSearch)
