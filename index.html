@@ -496,7 +496,7 @@
     <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
     <script src="//cdn.staticfile.org/history.js/1.8/bundled-uncompressed/html5/jquery.history.js"></script>
     <!--引入Javascript API GL，参数说明参见下文-->
-    <script src="//map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A"></script>
+    <script src="//map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A&libraries=geometry"></script>
     <script src="//3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
     
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/2.0.1/weui.min.css">
@@ -523,7 +523,7 @@
         var thisOrgName = decodeURI(getUrlParam("orgName"))
         var pagetitle = document.title
         var center = ''
-        var map,control,loading
+        var map,control,loading,originLat
         var infoWindow = {}
         var orgList = []
         var orginZoom = 0.1;
@@ -806,30 +806,19 @@
                 if(thisOrgInfo.isSearch){
                     orginZoom = map.getZoom()
                     mapStatus.zoom = 12
-
-                    //map.setZoom(12)
+                    map.setZoom(12)
                 }else{
                 }
-                //map.easeTo(mapStatus,{duration: duration})
-                
-                //map.setZoom(mapStatus.zoom)
-                infoWindow.open(); //打开信息窗
+
+                //map.panTo(latLng)
                 mapPoint = map.projectToContainer(latLng)
+                infoWindow.open(); //打开信息窗
                 let finalCenter = {}
                 //map.setCenter(latLng)
-                //finalCenter = map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+80})
-                let bounds = map.getBounds()
-                let center = map.getCenter()
-                let neLat = bounds.getNorthEast().lat
-                let swLat = bounds.getSouthWest().lat
-                let tmpLat =  ((((neLat - center.lat)/(20-map.getZoom()))*(20 - mapStatus.zoom))/((20 - mapStatus.zoom)*(20 - mapStatus.zoom)*40))*map.getScale()
-                let finalLat = latLng.lat + tmpLat
-                console.log(`neLat ${neLat} tmpLat ${tmpLat} center.lat ${center.lat} latLng ${latLng},finalLat ${finalLat}`)
-                finalCenter = new TMap.LatLng(finalLat, latLng.lng)
-                
+                finalCenter = map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+80})
                 mapStatus.center = finalCenter
-                //map.panTo(finalCenter,1000)
                 map.easeTo(mapStatus,{duration: duration})
+                
                 
             }
 
@@ -1088,7 +1077,6 @@
                 //console.log(res)
                 //map.setDraggable(true)
             //})
-
             map.removeControl(TMap.constants.DEFAULT_CONTROL_ID.SCALE);
             $('.logo-text').append('<a href="http://www.beian.gov.cn/" target="_blank" class="link_black" style="color: #1c4f7b;"> 粤ICP备20022545号-1 </a>')
             control = map.getControl(TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
