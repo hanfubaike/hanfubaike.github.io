@@ -833,8 +833,9 @@
             $.get(getUrl, { "id": orgid }, function (res) {
                 console.log(res)
                 let orgInfo = res.orgInfo
+                let orgLogo = orgInfo.logoList[0]||'res/orgLogo.png'
                 $('#orgName').text(`${orgInfo.orgName}`)
-                $('#logoImage').attr("src", `${orgInfo.logoList[0]}`)
+                $('#logoImage').attr("src", `${orgLogo}`)
                 let imgBanner = ""
                 for (let x in orgInfo.orgImageList) {
                     let imgUrl = orgInfo.orgImageList[x]
