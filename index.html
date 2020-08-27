@@ -496,7 +496,7 @@
     <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
     <script src="//cdn.staticfile.org/history.js/1.8/bundled-uncompressed/html5/jquery.history.js"></script>
     <!--引入Javascript API GL，参数说明参见下文-->
-    <script src="//map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A&libraries=geometry"></script>
+    <script src="//map.qq.com/api/gljs?v=1.exp&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A"></script>
     <script src="//3gimg.qq.com/lightmap/components/geolocation/geolocation.min.js"></script>
     
     <link rel="stylesheet" href="//res.wx.qq.com/open/libs/weui/2.0.1/weui.min.css">
@@ -518,7 +518,7 @@
         function restzoom(){
             console.log("restzoom")
             map.panTo(center)
-            map.setZoom(0)
+            map.zoomTo(3)
         }
         var geolocation = new qq.maps.Geolocation("AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A", "myapp");
         var thisOrgName = decodeURI(getUrlParam("orgName"))
@@ -529,7 +529,7 @@
         var map,control,loading,originLat,markerLayer,label
         var infoWindow = {}
         var orgList = []
-        var orginZoom = 0;
+        var orginZoom = 3;
         var thisOrgInfo = {}
 
         function openOrgPage(first=false){
@@ -561,13 +561,14 @@
                     setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng)
                 }
             });
-            History.replaceState(null,`${pagetitle}`,'/')
+            History.pushState(null,`${pagetitle}`,'/')
         })(window);
         function back(){
             console.log('back')
             History.replaceState(null,`${pagetitle}`,'/')
             map.setPitch(0)
             map.setRotation(0)
+            
         }
         var orgPageHtml = `<div class="orgpage" id="orgpage">
             <!-- SWIPER -->
@@ -953,7 +954,7 @@
             }else{
                 if(mobile_flag){
                     center = new TMap.LatLng(chinaLatlng.lat, chinaLatlng.lng)
-                    orginZoom = 2
+                    orginZoom = 3
                     map.easeTo({center:center,zoom:orginZoom})
                 }else{
                     center = new TMap.LatLng(globleLatLng.lat, globleLatLng.lng);
