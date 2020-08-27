@@ -409,9 +409,8 @@
         }
         #btn-positioning {
             vertical-align: bottom;
-            position: fixed;
-            bottom: 42px;
-            left: 16px;
+
+
             border: 0;
             box-shadow: 0 0 0;
             -webkit-box-shadow: 0 0 0;
@@ -421,15 +420,16 @@
         .icon-positioning-3 {
             background: url(//3gimg.qq.com/lightmap/mobilemap/common/images/map_position_small_normal_948d1bc.png) no-repeat center center;
             display: block;
-            background-size: 52px 52px;
-            width: 52px;
-            height: 52px;
+            background-size: 54px 54px;
+            height: 48px;
+            padding-bottom: 0px;
         }
         .icon-positioning-3-cover {
             display: inline-block;
-            width: 42px;
-            height: 42px;
-            margin: 5px;
+            height: 43px;
+            width: 43px;
+            margin-left: 14px;
+            margin-top: 3px;
             border-radius: 21px;
             -webkit-border-radius: 21px;
         }
@@ -438,6 +438,59 @@
         }
         .zoomcontrol{
             bottom: 100px;
+        }
+        #common-widget-map .ctrl-layer .to-bottom .bottom-ctrl .to-left {
+            position: fixed;
+            bottom: 129px;
+            left: -10px;
+        }
+        @font-face{font-family:icon;src:url(//3gimg.qq.com/lightmap/mobilemap/common/fonts/icon_f8c63a1.woff) format('woff'),url(//3gimg.qq.com/lightmap/mobilemap/common/fonts/icon_27c582a.ttf) format('truetype');font-weight:400;font-style:normal}
+        .to-left {
+            position: fixed;
+            bottom: 8px;
+            left: 16px;
+            z-index: 3;
+        }
+        #btn-index-menu {
+            display: none;
+            transform: scale(0.6);
+            -webkit-transform: scale(0.6);
+        }
+        .cbutton {
+            border-radius: 72px;
+            background-color: rgba(255,255,255,.95);
+            -webkit-box-shadow: 0 0 6px rgba(0,0,0,.1);
+            box-shadow: 0 0 6px rgba(0,0,0,.1);
+            border: 1px #bababa solid;
+            overflow: hidden;
+        }
+        .cbutton i {
+            display: block;
+        }
+        .cbutton i:before {
+            display: block;
+            font-size: 48px;
+            width: 48px;
+            line-height: 48px;
+            text-align: center;
+            color: #5e5e5e;
+            padding: 10px;
+        }
+        .icon-more:before {
+            content: "\e635";
+        }
+        .cbutton i:active {
+            background: rgba(0,0,0,.1);
+        }
+        [class^=icon-], [class*=" icon-"] {
+            font-family: icon;
+            speak: none;
+            font-style: normal;
+            font-weight: 400;
+            font-variant: normal;
+            text-transform: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
     </style>
     <script src="//libs.baidu.com/jquery/2.1.1/jquery.min.js"></script>
@@ -467,13 +520,25 @@
             map.zoomTo(orginZoom)
         }
         var geolocation = new qq.maps.Geolocation("AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A", "myapp");
-        var thisOrgName = decodeURI(getUrlParam("orgname"))
+        var thisOrgName = decodeURI(getUrlParam("orgName"))
         var pagetitle = document.title
         var center = ''
         var map,control
         var infoWindow = {}
         var orgList = []
         var orginZoom = 4;
+        var thisOrgInfo = {}
+
+        function openOrgPage(first=false){
+            let orgName = thisOrgInfo.orgName
+            if(!first){
+                console.log("替换链接")
+                History.replaceState(null,`${orgName} - 汉服百科`,`?orgName=${orgName}`)
+            }else if(!getUrlParam('orgName')){
+                console.log("添加链接")
+                History.pushState(null,`${orgName} - 汉服百科`,`?orgName=${orgName}`)  
+            }
+        }
         (function(window,undefined){
 
             // Bind to StateChange Event
@@ -489,6 +554,8 @@
                         infoWindow.close()
                     }
                     
+                }else if(getUrlParam('orgName')){
+                    setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng)
                 }
             });
             History.replaceState(null,`${pagetitle}`,'/')
@@ -703,14 +770,8 @@
             map.setDraggable(false)
         }
 
-        function setInfoWindow(orgname,orgid,latLng,isSearch=false,isClick=false) {
-            if(isClick && getUrlParam('orgname')){
-                console.log("替换链接")
-                History.replaceState(null,`${orgname} - 汉服百科`,`?orgname=${orgname}`)
-            }else if(!getUrlParam('orgname')){
-                console.log("添加链接")
-                History.pushState(null,`${orgname} - 汉服百科`,`?orgname=${orgname}`)  
-            }
+        function setInfoWindow(orgName,orgid,latLng) {
+
             
             //
             let mapPoint = {}
@@ -729,10 +790,9 @@
                 let orgNameLink = `<div style="width:400px">${orgPageHtml}</div>`
                 infoWindow.setContent(orgNameLink);//设置信息窗内容
                 $(".back").hide()
-                if(isSearch){
+                if(infoWindow.isSearch){
                     orginZoom = map.getZoom()
                     map.setZoom(14)
-                    infoWindow.isSearch = true
                 }else{
                     infoWindow.isSearch = false
                 }
@@ -754,7 +814,7 @@
             //map.setDraggable(false)
 
 
-            $('#orgName').text(`${orgname}`)
+            $('#orgName').text(`${orgName}`)
             let getUrl = "//master-xzb1z.service.tcloudbase.com/orginfo"
             $.get(getUrl, { "id": orgid }, function (res) {
                 console.log(res)
@@ -786,10 +846,16 @@
 
         function markerClick(evt){
             let geometry = evt.geometry
-            let orgname = geometry.properties.title.toString()
+            let orgName = geometry.properties.title.toString()
             let orgid =  geometry.properties.orgid
             let latLng = geometry.position
-            setInfoWindow(orgname,orgid,latLng,false,true)
+            thisOrgInfo = {
+                orgName,
+                orgid,
+                latLng
+            }
+            openOrgPage()
+            //setInfoWindow(orgName,orgid,latLng,false,true)
         }        
 
         function setMarkers(data) {
@@ -807,16 +873,16 @@
             var markerList = []
             var positionList = []
             
-            var thisOrgjson = {}
+            
             for (let x in orgList) {
                 let lat = orgList[x].longLatiute.coordinates[1]
                 let lng = orgList[x].longLatiute.coordinates[0]
                 let name = orgList[x].orgName
                 let id = orgList[x]._id
                 if (name == thisOrgName){
-                    thisOrgjson.orgName = name
-                    thisOrgjson.position = new TMap.LatLng(lat, lng)
-                    thisOrgjson.orgid = id
+                    thisOrgInfo.orgName = name
+                    thisOrgInfo.latLng = new TMap.LatLng(lat, lng)
+                    thisOrgInfo.orgid = id
                 }
                 positionList.push({
                     position: new TMap.LatLng(lat, lng)
@@ -887,11 +953,14 @@
             infoWindow.on("closeclick",function(){
                 if(infoWindow.isSearch){
                     map.zoomTo(orginZoom)
+                    infoWindow.isSearch = false
                 }
                 History.replaceState(null,pagetitle,"/")
             })
-            if(thisOrgjson.orgName){
-                setInfoWindow(thisOrgjson.orgName,thisOrgjson.orgid,thisOrgjson.position,true)
+            if(thisOrgInfo.orgName){
+                infoWindow.isSearch = true
+                openOrgPage(true)
+                //setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng,true)
             }
             var clusterBubbleList = [];
             var markerGeometries = [];
@@ -936,7 +1005,7 @@
                         styles: MarkerStyle,
                         geometries: markerGeometries
                     });
-                    markerLayer.on("click", setInfoWindow)
+                    markerLayer.on("click", markerClick)
                 }
             });
 
@@ -980,6 +1049,7 @@
                 //map.setDraggable(true)
             //})
             map.removeControl(TMap.constants.DEFAULT_CONTROL_ID.SCALE);
+            $('.logo-text').append('<a href="http://www.beian.gov.cn/" target="_blank" class="link_black" style="color: #1c4f7b;"> 粤ICP备20022545号-1 </a>')
             control = map.getControl(TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
             control.setPosition(TMap.constants.CONTROL_POSITION.BOTTOM_RIGHT);
             map.on("click",function(res){
@@ -1072,7 +1142,7 @@
                 </form>
                 <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
             </div>
-            <div class="weui-cells searchbar-result" id="searchResult" style="display: none;">
+            <div class="weui-cells searchbar-result" id="searchResult" style="display: none;padding: 10px;">
 
             </div>
         </div>
@@ -1080,11 +1150,17 @@
         <div id="container">
 
         </div>
-        <a id="btn-positioning" onclick="getLocation()">
-            <i class="icon-positioning icon-positioning-3 highlight">
-                <i class="icon-positioning-3-cover"></i>
-            </i>
-            </a>
+
+        <div class="to-left">
+            <div id="btn-positioning" onclick="getLocation()">
+                <i class="icon-positioning icon-positioning-3 highlight">
+                    <i class="icon-positioning-3-cover"></i>
+                </i>
+            </div>
+            <!-- 弹出菜单-->
+           <div class="cbutton" id="btn-index-menu" data-adtag="more" style="display: block;"><a target="_blank" href="https://mp.weixin.qq.com/s/KFIWjE8kWDNburB2paUBIA"><i class="icon-more"></i></a></div>
+
+       </div>
     </div>
     <div class="common_content_box" id="common_content_box"></div>
     <script type="text/javascript">
@@ -1092,13 +1168,19 @@
         function clickTips(self){
             let searchResult = $('#searchResult')
             searchResult.hide();
-            let isSearch = true
-            let orgName = $(self).data('orgname')
+            infoWindow.isSearch = true
+            let orgName = $(self).data('orgName')
             let orgid = $(self).data('orgid')
             let lat = $(self).data('lat')
             let lng = $(self).data('lng')
             let latLng = new TMap.LatLng(lat, lng)
-            setInfoWindow(orgName,orgid,latLng,isSearch)
+            thisOrgInfo = {
+                orgName,
+                orgid,
+                latLng
+            }
+            openOrgPage()
+            //setInfoWindow(orgName,orgid,latLng,isSearch)
             //map.zoomTo(8)
         }
         $(function(){
@@ -1168,7 +1250,7 @@
                                 }
                                 
                                 i++
-                                tempHtml += `<div class="weui-cell weui-cell_active weui-cell_access" onclick="clickTips(this)" data-orgid="${orgid}" data-orgname="${orgName}" data-lat="${lat}" data-lng="${lng}">
+                                tempHtml += `<div class="weui-cell weui-cell_active weui-cell_access" style="padding:10px" onclick="clickTips(this)" data-orgid="${orgid}" data-orgName="${orgName}" data-lat="${lat}" data-lng="${lng}">
                                                     <div class="weui-cell__bd weui-cell_primary tips">
                                                         <p>${orgName}</p>
                                                         <p style="font-size:12px;left:4px;color: #999;">${locationAddress}</p>
