@@ -512,7 +512,7 @@
             geolocation.getLocation(function(res){
                 console.log(res)
                 center = new TMap.LatLng(res.lat, res.lng)
-                map.easeTo({zoom:14,center:center},{duration: 1000})
+                map.easeTo({zoom:10,center:center},{duration: 1000})
             })
         }
         function restzoom(){
@@ -523,7 +523,7 @@
         var thisOrgName = decodeURI(getUrlParam("orgName"))
         var pagetitle = document.title
         var center = ''
-        var map,control
+        var map,control,loading
         var infoWindow = {}
         var orgList = []
         var orginZoom = 0.1;
@@ -775,7 +775,8 @@
         function setInfoWindow(orgName,orgid,latLng) {
 
             
-            //
+            //延迟打开的时间
+            let duration = 1000
             let mapPoint = {}
             let pageHeight = $(window).height()
             let orgpage = $('#orgpage')
@@ -787,17 +788,12 @@
                 $(".arrow-box").hide()
             }else{
                 //设置infoWindow
-                infoWindow.open(); //打开信息窗
+                
                 infoWindow.setPosition(latLng);//设置信息窗位置
                 let orgNameLink = `<div style="width:400px">${orgPageHtml}</div>`
                 infoWindow.setContent(orgNameLink);//设置信息窗内容
                 $(".back").hide()
-                if(infoWindow.isSearch){
-                    orginZoom = map.getZoom()
-                    map.setZoom(14)
-                }else{
-                    infoWindow.isSearch = false
-                }
+ 
                 
                 orgpage.mouseenter(function(){
                     map.setDraggable(false)
@@ -805,12 +801,27 @@
                 orgpage.mouseleave(function(){
                     map.setDraggable(true)
                 })
+                let mapStatus = {center:latLng}
+                //map.panTo(latLng)
+                if(infoWindow.isSearch){
+                    orginZoom = map.getZoom()
+                    mapStatus.zoom = 12
+                    //map.setZoom(12)
+                }else{
+                    infoWindow.isSearch = false
+                }
+                map.easeTo(mapStatus,{duration: duration})
                 
-                map.panTo(latLng)
-                mapPoint = map.projectToContainer(latLng)
-                map.panTo(map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+80}),2000)
+                //map.zoomTo(mapStatus.zoom)
+                setTimeout(() => {
+                    infoWindow.open(); //打开信息窗
+                    mapPoint = map.projectToContainer(latLng)
+                    map.panTo(map.unprojectFromContainer({x:mapPoint.x,y:mapPoint.y-pageHeight/2+80}),1000)
+                }, duration);
+                
             }
 
+            
 
             
             //map.setDraggable(false)
@@ -861,6 +872,8 @@
         }        
 
         function setMarkers(data) {
+            loading.hide()
+
             orgList = data.orgList
             console.log(orgList)
             //创建并初始化MultiMarker
@@ -960,9 +973,22 @@
                 History.replaceState(null,pagetitle,"/")
             })
             if(thisOrgInfo.orgName){
+                console.log("搜索")
                 infoWindow.isSearch = true
                 openOrgPage(true)
                 //setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng,true)
+            }else{
+                if(mobile_flag){
+                    center = new TMap.LatLng(35.71567199798269, 107.76217916748408)
+                    orginZoom = 2
+                    map.easeTo({center:center,zoom:orginZoom})
+                }else{
+                    center = new TMap.LatLng(26.102159897107754, 11.790522176484501);
+                    setTimeout(() => {
+                        map.panTo(center,{duration:3000})
+                    }, 300);
+                    
+                }
             }
             var clusterBubbleList = [];
             var markerGeometries = [];
@@ -1032,8 +1058,8 @@
         //地图初始化函数，本例取名为init，开发者可根据实际情况定义
         function initMap() {
             //定义地图中心点坐标
-            var center = new TMap.LatLng(24.833091602492335, 31.470296073417103)
-            //center = new TMap.LatLng(37.846664,112.553555);
+            //var center = new TMap.LatLng(24.833091602492335, 31.470296073417103)
+            var center = new TMap.LatLng(37.846664,112.553555);
             //定义map变量，调用 TMap.Map() 构造函数创建地图
             map = new TMap.Map(document.getElementById('container'), {
                 center: center,//设置地图中心点坐标
@@ -1050,11 +1076,7 @@
                 //console.log(res)
                 //map.setDraggable(true)
             //})
-            if(mobile_flag){
-                center = new TMap.LatLng(35.71567199798269, 107.76217916748408)
-                orginZoom = 4
-                map.easeTo({center:center,zoom:orginZoom})
-            }
+
             map.removeControl(TMap.constants.DEFAULT_CONTROL_ID.SCALE);
             $('.logo-text').append('<a href="http://www.beian.gov.cn/" target="_blank" class="link_black" style="color: #1c4f7b;"> 粤ICP备20022545号-1 </a>')
             control = map.getControl(TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
@@ -1063,9 +1085,15 @@
                 infoWindow.close()
                 History.replaceState(null,pagetitle,"/")
             })
-            let postUrl = "//master-xzb1z.service.tcloudbase.com/orgList"
-
-            $.get(postUrl, "", setMarkers)
+            let getUrl = "//master-xzb1z.service.tcloudbase.com/orgList"
+            loading = weui.loading('正在加载', {
+                className: 'custom-classname'
+            });
+            $.get(getUrl, "", setMarkers).error(function(res){
+                console.log(res)
+                weui.alert(`获取数据失败：${res.responseText}`, { title:  '提示'});
+                loading.hide()
+            })
 
         }
 
@@ -1176,7 +1204,7 @@
             let searchResult = $('#searchResult')
             searchResult.hide();
             infoWindow.isSearch = true
-            let orgName = $(self).data('orgName')
+            let orgName = $(self).data('orgname')
             let orgid = $(self).data('orgid')
             let lat = $(self).data('lat')
             let lng = $(self).data('lng')
