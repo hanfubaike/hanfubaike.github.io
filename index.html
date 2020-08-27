@@ -511,22 +511,25 @@
         function getLocation(){
             geolocation.getLocation(function(res){
                 console.log(res)
-                center = new TMap.LatLng(res.lat, res.lng)
+                let center = new TMap.LatLng(res.lat, res.lng)
                 map.easeTo({zoom:10,center:center},{duration: 1000})
             })
         }
         function restzoom(){
             console.log("restzoom")
-            map.zoomTo(orginZoom)
+            map.panTo(center)
+            map.setZoom(0)
         }
         var geolocation = new qq.maps.Geolocation("AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A", "myapp");
         var thisOrgName = decodeURI(getUrlParam("orgName"))
         var pagetitle = document.title
-        var center = ''
-        var map,control,loading,originLat
+        var center
+        var globleLatLng = {lat:26.102159897107754, lng:11.790522176484501}
+        var chinaLatlng = {lat:35.71567199798269, lng:107.76217916748408}
+        var map,control,loading,originLat,markerLayer,label
         var infoWindow = {}
         var orgList = []
-        var orginZoom = 0.1;
+        var orginZoom = 0;
         var thisOrgInfo = {}
 
         function openOrgPage(first=false){
@@ -681,6 +684,7 @@
                 "anchor": { x: 16, y: 32 }
             })
         }
+
 
         function setSwiper(){
             var interval = 3000;                //轮播间隔时间
@@ -878,15 +882,7 @@
 
             orgList = data.orgList
             console.log(orgList)
-            //创建并初始化MultiMarker
-            var markerLayer = new TMap.MultiMarker({
-                map: map,  //指定地图容器
-                //样式定义
-                styles: MarkerStyle,
-                //点标记数据数组
-                geometries: [
-                ]
-            });
+
             var markerList = []
             var positionList = []
             
@@ -933,32 +929,7 @@
                 averageCenter: true, //每个聚和簇的中心是否应该是聚类中所有标记的平均值
                 maxZoom: 16 //采用聚合策略的最大缩放级别，若地图缩放级别大于该值，则不进行聚合，标点将全部被展开
             });
-            /*
-            var label = new TMap.MultiLabel({
-                    id: 'label-layer',
-                    map: map,
-                    enableCollision:true,
-                    styles: {
-                        'label': new TMap.LabelStyle({
-                            'color': '#3777FF', //颜色属性
-                            'size': 12, //文字大小属性
-                            'offset': { x: 0, y: 0 }, //文字偏移属性单位为像素
-                            'angle': 0, //文字旋转属性
-                            'alignment': 'center', //文字水平对齐属性
-                            'verticalAlignment': 'middle' //文字垂直对齐属性
-                        })
-                    },
-                    geometries: [{
-                        'id': 'label', //点图形数据的标志信息
-                        'styleId': 'label', //样式id
-                        'position': new TMap.LatLng(39.954104, 116.357503),  //点标记坐标位置
-                        'content': '腾讯北京总部', //标注文本
-                        'properties': { //标注点的属性数据
-                            'title': 'label'
-                        }
-                    }]
-                })
-                */
+
             //初始化infoWindow
             infoWindow = new TMap.InfoWindow({
                 map: map,
@@ -981,11 +952,11 @@
                 //setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng,true)
             }else{
                 if(mobile_flag){
-                    center = new TMap.LatLng(35.71567199798269, 107.76217916748408)
+                    center = new TMap.LatLng(chinaLatlng.lat, chinaLatlng.lng)
                     orginZoom = 2
                     map.easeTo({center:center,zoom:orginZoom})
                 }else{
-                    center = new TMap.LatLng(26.102159897107754, 11.790522176484501);
+                    center = new TMap.LatLng(globleLatLng.lat, globleLatLng.lng);
                     setTimeout(() => {
                         map.panTo(center,{duration:3000})
                     }, 300);
@@ -994,6 +965,7 @@
             }
             var clusterBubbleList = [];
             var markerGeometries = [];
+            var labelGeometries = []
             var marker = null;
 
             // 监听聚合簇变化
@@ -1006,6 +978,7 @@
                     clusterBubbleList = [];
                 }
                 markerGeometries = [];
+                labelGeometries = []
 
                 // 根据新的聚合簇数组生成新的覆盖物和点标记图层
                 var clusters = markerCluster.getClusters();
@@ -1022,21 +995,24 @@
                         clusterBubbleList.push(clusterBubble);
                     } else {
                         markerGeometries.push(item.geometries[0]);
+                        let position = item.geometries[0].position
+                        let name = item.geometries[0].properties.title
+                        let orgid = item.geometries[0].properties.orgid
+                        labelGeometries.push({
+                            'id': 'label', //点图形数据的标志信息
+                            'styleId': 'label', //样式id
+                            'position': position, //标注点位置
+                            'content': name, //标注文本
+                            'properties': { //标注点的属性数据
+                                'title': name,
+                                'orgid':orgid
+                                }
+                        });
                     }
-                });
-
-                if (markerLayer) {
-                    // 已创建过点标记图层，直接更新数据
-                    markerLayer.setGeometries(markerGeometries);
-                } else {
-                    // 创建点标记图层
-                    markerLayer = new TMap.MultiMarker({
-                        map,
-                        styles: MarkerStyle,
-                        geometries: markerGeometries
-                    });
-                    markerLayer.on("click", markerClick)
-                }
+                })
+                // 已创建过点标记图层，直接更新数据
+                markerLayer.setGeometries(markerGeometries);
+                label.setGeometries(labelGeometries)
             });
 
 
@@ -1061,7 +1037,7 @@
         function initMap() {
             //定义地图中心点坐标
             //var center = new TMap.LatLng(24.833091602492335, 31.470296073417103)
-            var center = new TMap.LatLng(37.846664,112.553555);
+            center = new TMap.LatLng(chinaLatlng.lat,chinaLatlng.lng);
             //定义map变量，调用 TMap.Map() 构造函数创建地图
             map = new TMap.Map(document.getElementById('container'), {
                 center: center,//设置地图中心点坐标
@@ -1082,6 +1058,33 @@
             $('.logo-text').append('<a href="http://www.beian.gov.cn/" target="_blank" class="link_black" style="color: #1c4f7b;"> 粤ICP备20022545号-1 </a>')
             control = map.getControl(TMap.constants.DEFAULT_CONTROL_ID.ZOOM);
             control.setPosition(TMap.constants.CONTROL_POSITION.BOTTOM_RIGHT);
+
+            //创建并初始化MultiMarker
+            markerLayer = new TMap.MultiMarker({
+                map: map,  //指定地图容器
+                //样式定义
+                styles: MarkerStyle,
+                //点标记数据数组
+                geometries: [
+                ]
+            });
+            //初始化label
+            label = new TMap.MultiLabel({
+                id: 'label-layer',
+                map: map,
+                styles: {
+                    'label': new TMap.LabelStyle({
+                        'color': '#333', //颜色属性
+                        'size': 16, //文字大小属性
+                        'offset': { x: 0, y: 5 }, //文字偏移属性单位为像素
+                        'angle': 0, //文字旋转属性
+                        'alignment': 'center', //文字水平对齐属性
+                        'verticalAlignment': 'middle' //文字垂直对齐属性
+                    })
+                },
+                geometries: []    
+            })
+
             map.on("click",function(res){
                 infoWindow.close()
                 History.replaceState(null,pagetitle,"/")
