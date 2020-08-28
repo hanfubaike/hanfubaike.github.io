@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html itemscope="" itemtype="http://schema.org/SearchResultsPage" lang="zh-CN">
+<html lang="zh-CN">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta charset="utf-8">
     <meta content="always" name="referrer">
+    
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
@@ -18,7 +19,7 @@
             height: 100%;
         }
 
-
+        
         body,
         button,
         input,
@@ -533,6 +534,7 @@
         var orgList = []
         var orginZoom = 3;
         var thisOrgInfo = {}
+        var orgdivZoom
 
         function openOrgPage(first=false){
             let orgName = thisOrgInfo.orgName
@@ -680,7 +682,10 @@
         }
 
         var mobile_flag = isMobile();
-
+        if(!mobile_flag){
+            //如果是PC，则对页面进行缩放，以适应windows系统的DPI缩放。
+            orgdivZoom = window.screen.width / 1920
+        }
         var MarkerStyle = {
             //创建一个styleId为"markerStyle"的样式（styles的子属性名即为styleId）
             "markerStyle": new TMap.MarkerStyle({
@@ -708,8 +713,11 @@
             for(let i = 1; i < imgCount; i++){
                 dot.append("<li></li>")
             }
+
             $('#inner li a').css("width",imgW)
             $('#inner').css("width",imgW*imgCount)
+            $('#orgdiv').css("width",imgW)
+
             var i = 0;                          //初始化为第0张图片
             timer = null;                       //定时器
             if(imgCount < 2){
@@ -800,7 +808,7 @@
                 //设置infoWindow
                 
                 infoWindow.setPosition(latLng);//设置信息窗位置
-                let orgNameLink = `<div style="width:400px">${orgPageHtml}</div>`
+                let orgNameLink = `<div id="orgdiv" style="width:400px;zoom:${orgdivZoom}">${orgPageHtml}</div>`
                 infoWindow.setContent(orgNameLink);//设置信息窗内容
                 $(".back").hide()
                 orgpage = $('#orgpage')
@@ -838,7 +846,7 @@
 
 
             $('#orgName').text(`${orgName}`)
-            let getUrl = "//master-xzb1z.service.tcloudbase.com/orginfo"
+            let getUrl = "//cb.hanfu.wiki/orginfo"
             $.get(getUrl, { "id": orgid }, function (res) {
                 console.log(res)
                 let orgInfo = res.orgInfo
@@ -1107,7 +1115,7 @@
                 }
                 History.replaceState(null,pagetitle,"/")
             })
-            let getUrl = "//master-xzb1z.service.tcloudbase.com/orgList"
+            let getUrl = "//cb.hanfu.wiki/orgList"
             loading = weui.loading('正在加载', {
                 className: 'custom-classname'
             });
