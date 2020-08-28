@@ -322,7 +322,7 @@
 
         .slide .arrow-box {
             position: absolute;
-            width: 100%;
+            /*width: 100%;*/
             height: 60px;
             top: 40%;
             left: 0;
@@ -346,6 +346,8 @@
 
         .slide .arrow-box .arrow.arrow-r {
             float: right;
+            right: 10px;
+            position: fixed;
         }
 
         #searchPart {
@@ -517,8 +519,8 @@
         }
         function restzoom(){
             console.log("restzoom")
-            map.panTo(center)
-            map.zoomTo(3)
+            let orginCenter = new TMap.LatLng(chinaLatlng.lat,chinaLatlng.lng)
+            map.easeTo({center:orginCenter,zoom:3,rotation:0,pitch:0})
         }
         var geolocation = new qq.maps.Geolocation("AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A", "myapp");
         var thisOrgName = decodeURI(getUrlParam("orgName"))
@@ -534,10 +536,10 @@
 
         function openOrgPage(first=false){
             let orgName = thisOrgInfo.orgName
-            if(!first){
+            if(getUrlParam('orgName')&& !first){
                 console.log("替换链接")
                 History.replaceState(null,`${orgName} - 汉服百科`,`?orgName=${orgName}`)
-            }else if(!getUrlParam('orgName')){
+            }else {
                 console.log("添加链接")
                 History.pushState(null,`${orgName} - 汉服百科`,`?orgName=${orgName}`)  
             }
@@ -592,11 +594,15 @@
 
             <!-- HEADER -->
             <div class="head-wrapper logo-mode">
-                <img class="logo" id="logoImage" src=""></img>
+                <a href="" id="logoHref" target="_blank">
+                    <img class="logo" id="logoImage" src=""></img>
+                </a>
                 <div class="title">
                 <div class="name" id="orgName"></div>
                 <div style="display: flex;">
-                    <img class="navigate" id="navigate" src="/res/navigate.png" bindtap="navigateTo"></img>
+                    <a href="javascript:">
+                        <img class="navigate" id="navigate" src="/res/navigate.png"></img>
+                    </a>
                 </div>
                 </div>
             </div>
@@ -781,11 +787,10 @@
 
             
             //延迟打开的时间
-            let duration = 1000
+            let duration = 2000
             let mapPoint = {}
+            var orgpage
             let pageHeight = $(window).height()
-            let orgpage = $('#orgpage')
-
             if(mobile_flag){
                 $('#common_content_box').html(orgPageHtml)
                 $('#common_content_box').show()
@@ -798,8 +803,7 @@
                 let orgNameLink = `<div style="width:400px">${orgPageHtml}</div>`
                 infoWindow.setContent(orgNameLink);//设置信息窗内容
                 $(".back").hide()
- 
-                
+                orgpage = $('#orgpage')
                 orgpage.mouseenter(function(){
                     map.setDraggable(false)
                 })
@@ -841,6 +845,7 @@
                 let orgLogo = orgInfo.logoList[0]||'res/orgLogo.png'
                 $('#orgName').text(`${orgInfo.orgName}`)
                 $('#logoImage').attr("src", `${orgLogo}`)
+                $("#logoHref").attr("href", `${orgLogo}`)
                 let imgBanner = ""
                 for (let x in orgInfo.orgImageList) {
                     let imgUrl = orgInfo.orgImageList[x]
@@ -860,6 +865,9 @@
                 $('#QQGroup pp').text(`QQ群号：${orgInfo.QQGroup}`)
                 $('#wxmp pp').text(`微信公众号：${orgInfo.wxmp}`)
                 $('#orgDesc').text(`${orgInfo.orgDesc}`)
+                $('#navigate').click(function(){
+                    window.open(`https://apis.map.qq.com/tools/poimarker?type=0&marker=coord:${latLng.lat},${latLng.lng};title:${orgInfo.orgName};addr:${orgInfo.locationAddress}&key=AIZBZ-F5M62-ACTUF-C2LQH-DQKC7-TVB7A&referer=hanfubaike`)
+                })
 
             })
         }
@@ -1004,6 +1012,7 @@
                             'styleId': 'label', //样式id
                             'position': position, //标注点位置
                             'content': name, //标注文本
+                            'rank':999, //文本碰撞时的优先级，值越大优先级越高。
                             'properties': { //标注点的属性数据
                                 'title': name,
                                 'orgid':orgid
@@ -1070,14 +1079,18 @@
                 ]
             });
             //初始化label
+            var fontSize = 16
+            if(mobile_flag){
+                fontSize = 14
+            }
             label = new TMap.MultiLabel({
                 id: 'label-layer',
                 map: map,
                 styles: {
                     'label': new TMap.LabelStyle({
-                        'color': '#333', //颜色属性
-                        'size': 16, //文字大小属性
-                        'offset': { x: 0, y: 5 }, //文字偏移属性单位为像素
+                        'color': '#4F4F4F', //颜色属性
+                        'size': fontSize, //文字大小属性
+                        'offset': { x: 0, y: 7 }, //文字偏移属性单位为像素
                         'angle': 0, //文字旋转属性
                         'alignment': 'center', //文字水平对齐属性
                         'verticalAlignment': 'middle' //文字垂直对齐属性
@@ -1088,6 +1101,10 @@
 
             map.on("click",function(res){
                 infoWindow.close()
+                if(thisOrgInfo.isSearch){
+                    map.zoomTo(orginZoom)
+                    thisOrgInfo.isSearch = false
+                }
                 History.replaceState(null,pagetitle,"/")
             })
             let getUrl = "//master-xzb1z.service.tcloudbase.com/orgList"
