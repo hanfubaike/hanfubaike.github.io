@@ -29,7 +29,7 @@ module.exports = {
    ]
  ],
     head: [
-    ['link', { rel: 'icon', href: `https://cdn.nlark.com/yuque/0/2019/png/242808/1549571925285-2372b0a0-0234-421c-a139-00ea16f1a106.png` }],
+    ['link', { rel: 'icon', href: `logo.png` }],
     ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
@@ -38,8 +38,10 @@ module.exports = {
     ],
     themeConfig: {
       repo: 'hanfubaike/',
+      logo: 'logo.png',
+      smoothScroll: true,
       nav: [
-        { text: '汉服地图', link: 'http://hanfu.wiki/map/' },
+        { text: '汉服地图', link: '/map/', target:'_blank' },
         { text: '项目主页', link: 'https://www.yuque.com/hanfubaike' },
         { text: '意见反馈', link: 'https://www.yuque.com/hanfubaike/topics' },
       ]
