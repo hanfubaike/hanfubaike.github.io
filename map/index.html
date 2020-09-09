@@ -1060,9 +1060,10 @@
             map = new TMap.Map(document.getElementById('container'), {
                 center: center,//设置地图中心点坐标
                 zoom: orginZoom,   //设置地图缩放级别
+                viewMode:"2D",
                 pitch: 0,  //设置俯仰角
                 rotation: 0,    //设置地图旋转角度
-                mapStyleId: "style3"
+                mapStyleId: "style3",
             });
             //map.on("mousedown",function(res){
                 //console.log(res)
