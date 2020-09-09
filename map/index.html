@@ -540,10 +540,10 @@
             let orgName = thisOrgInfo.orgName
             if(getUrlParam('orgName')&& !first){
                 console.log("替换链接")
-                History.replaceState(null,`${orgName} - 汉服百科`,`?orgName=${orgName}`)
+                History.replaceState(null,`${orgName} - 汉服百科`,`/map/?orgName=${orgName}`)
             }else {
                 console.log("添加链接")
-                History.pushState(null,`${orgName} - 汉服百科`,`?orgName=${orgName}`)  
+                History.pushState(null,`${orgName} - 汉服百科`,`/map/?orgName=${orgName}`)  
             }
         }
         (function(window,undefined){
@@ -552,7 +552,7 @@
             History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
                 var State = History.getState(); // Note: We are using History.getState() instead of event.state
                 //console.log(State)
-                if(State.url == `${window.location.origin}/`){
+                if(State.url == `${window.location.origin}/map/`){
                     $('#common_content_box').html()
                     $('#common_content_box').hide()
                     $("#searchPart").show()
@@ -565,11 +565,11 @@
                     setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng)
                 }
             });
-            History.pushState(null,`${pagetitle}`,'/')
+            History.pushState(null,`${pagetitle}`,'/map/')
         })(window);
         function back(){
             console.log('back')
-            History.replaceState(null,`${pagetitle}`,'/')
+            History.replaceState(null,`${pagetitle}`,'/map/')
             map.setPitch(0)
             map.setRotation(0)
             
@@ -691,7 +691,7 @@
             "markerStyle": new TMap.MarkerStyle({
                 "width": 20,  // 点标记样式宽度（像素）
                 "height": 30, // 点标记样式高度（像素）
-                "src": 'res/marker.png',  //图片路径
+                //"src": '/res/marker.png',  //图片路径
                 //焦点在图片中的像素位置，一般大头针类似形式的图片以针尖位置做为焦点，圆形点以圆心位置为焦点
                 "anchor": { x: 16, y: 32 }
             })
@@ -960,7 +960,7 @@
                     map.zoomTo(orginZoom)
                     thisOrgInfo.isSearch = false
                 }
-                History.replaceState(null,pagetitle,"/")
+                History.replaceState(null,pagetitle,"/map/")
             })
             if(thisOrgInfo.orgName){
                 console.log("搜索")
@@ -1114,7 +1114,7 @@
                     map.zoomTo(orginZoom)
                     thisOrgInfo.isSearch = false
                 }
-                History.replaceState(null,pagetitle,"/")
+                History.replaceState(null,pagetitle,"/map/")
             })
             let getUrl = "//cb.hanfu.wiki/orgList"
             loading = weui.loading('正在加载', {
@@ -1270,7 +1270,7 @@
 
             function clearInput(){
                 $searchResult.hide();
-                History.replaceState(null,pagetitle,"/")
+                History.replaceState(null,pagetitle,"/map/")
                 infoWindow.close()
                 map.zoomTo(orginZoom)
             }
