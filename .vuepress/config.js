@@ -34,7 +34,17 @@ module.exports = {
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
     ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
     ['meta', { name: 'msapplication-TileColor', content: '#000000' }],
-    ['meta', { name: 'referrer', content: 'no-referrer' }]
+    ['meta', { name: 'referrer', content: 'no-referrer' }],
+    //百度统计代码
+    ['script', {}, `
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?26e22164323c5647b2850122e1bd3ef4";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();
+      `]
     ],
     themeConfig: {
       repo: 'hanfubaike/',
