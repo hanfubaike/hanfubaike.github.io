@@ -1195,7 +1195,7 @@
             <!--<a href="javascript:" class="weui-btn weui-btn_primary">点击展现searchBar</a>-->
             <div class="weui-search-bar" id="searchBar" style="background-color: #fff;">
                 <form class="weui-search-bar__form">
-                    <img class="logo" src="/res/logo.png" onclick="restzoom()">
+                    <img class="logo" src="/res/logo.png" onclick="backHome()">
                     <div class="weui-search-bar__box">
                         <i class="weui-icon-search"></i>
                         <input type="search" class="weui-search-bar__input" id="searchInput" placeholder="请输入组织名或城市名" required/>
@@ -1250,6 +1250,10 @@
             //setInfoWindow(orgName,orgid,latLng,isSearch)
             //map.zoomTo(8)
         }
+        function backHome(){
+            History.replaceState(null,null,'/')
+        }
+
         $(function(){
             var $searchBar = $('#searchBar'),
                 $searchResult = $('#searchResult'),
