@@ -545,10 +545,12 @@
         var orginZoom = 3;
         var thisOrgInfo = {}
         var orgdivZoom
+        var isfirst = true
 
-        function openOrgPage(first=false){
+        function openOrgPage(){
             let orgName = thisOrgInfo.orgName
-            if(getUrlParam('orgName')&& !first){
+            if(getUrlParam('orgName')&& !isfirst){
+                isfirst = false
                 console.log("替换链接")
                 History.replaceState(null,`${orgName} - 汉服百科`,`/map/?orgName=${orgName}`)
             }else {
@@ -975,7 +977,7 @@
             if(thisOrgInfo.orgName){
                 console.log("搜索")
                 thisOrgInfo.isSearch = true
-                openOrgPage(true)
+                openOrgPage()
                 //setInfoWindow(thisOrgInfo.orgName,thisOrgInfo.orgid,thisOrgInfo.latLng,true)
             }else{
                 if(mobile_flag){
